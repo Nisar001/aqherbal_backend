@@ -1,0 +1,50 @@
+{
+  "name": "aqherbal_backend",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/Nisar001/aqherbal_backend#readme",
+  "bugs": {
+    "url": "https://github.com/Nisar001/aqherbal_backend/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Nisar001/aqherbal_backend.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon",
+    "test": "jest"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.2",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.0",
+    "express": "^5.1.0",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.1",
+    "multer": "^2.0.2",
+    "nodemailer": "^7.0.5",
+    "npm": "^11.4.2",
+    "pg": "^8.16.3",
+    "reflect-metadata": "^0.2.2",
+    "stripe": "^18.3.0",
+    "twilio": "^5.7.3",
+    "typeorm": "^0.3.25",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "eslint": "^9.31.0",
+    "jest": "^30.0.4",
+    "nodemon": "^3.1.10",
+    "prettier": "^3.6.2",
+    "supertest": "^7.1.3"
+  }
+}
