@@ -1,5 +1,6 @@
-// Example service function
-export const sendEmail = async (to, subject, body) => {
-  // Integrate nodemailer here
-  return { success: true };
-};
+
+export * from './email.service.js';
+export * from './notification.service.js';
+export * from './scheduler.service.js';
+export * from './cloudinary.service.js';
+

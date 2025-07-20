@@ -1,4 +1,5 @@
-export const getUsers = (req, res) => {
-  // Example response
-  res.json({ success: true, users: [{ id: 1, name: 'John Doe' }] });
-};
+export * from './getUserById.controller.js';
+export * from './updateUser.controller.js';
+export * from './deleteUser.controller.js';
+export * from './listUsers.controller.js';
+export * from './getUsers.controller.js';

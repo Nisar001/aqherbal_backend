@@ -17,20 +17,28 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon",
-    "test": "jest"
+    "test": "jest",
+    "build": "echo \"No build step defined. Add transpilation or bundling here if needed.\""
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
+    "cloudinary": "^2.7.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.0",
-    "express": "^5.1.0",
+    "express": "^4.18.2",
+    "express-rate-limit": "^8.0.1",
+    "express-validator": "^7.2.1",
     "helmet": "^8.1.0",
+    "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.16.4",
     "morgan": "^1.10.1",
     "multer": "^2.0.2",
+    "node-cron": "^4.2.1",
+    "node-fetch": "^3.3.2",
     "nodemailer": "^7.0.5",
     "npm": "^11.4.2",
     "pg": "^8.16.3",
@@ -38,7 +46,10 @@
     "stripe": "^18.3.0",
     "twilio": "^5.7.3",
     "typeorm": "^0.3.25",
-    "uuid": "^11.1.0"
+    "uuid": "^11.1.0",
+    "winston": "^3.17.0",
+    "xss": "^1.0.15",
+    "xss-clean": "^0.1.4"
   },
   "devDependencies": {
     "eslint": "^9.31.0",
