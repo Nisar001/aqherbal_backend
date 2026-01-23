@@ -3,7 +3,7 @@ import { validateRegister } from '../../../validations/user.validation.js';
 import { UserModel } from '../../../models/index.js';
 import { responseHelper } from '../../../helpers/index.js';
 import { hashPassword } from '../../../utils/password.js';
-import { sendRegistrationEmail, sendVerificationEmail } from '../../../services/email.service.js';
+import { sendRegistrationEmail } from '../../../services/email.service.js';
 
 export const register = async (req, res) => {
   try {

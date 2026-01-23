@@ -8,7 +8,7 @@ export class AppError extends Error {
   }
 }
 
-export const errorHandler = (err, req, res, next) => {
+export const errorHandler = (err, req, res, _next) => {
   logger.error({
     message: err.message,
     stack: err.stack,

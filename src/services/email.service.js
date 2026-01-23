@@ -8,7 +8,7 @@ export const sendLoginAlertEmail = async ({ to, name, email, ip }) => {
 };
 // Professional HTML email templates
 const emailTemplates = {
-userDeleted: ({ name, email }) => `
+  userDeleted: ({ name, email }) => `
   <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;padding:24px;background:#f9f9f9;border-radius:8px;">
     <h2 style="color:#d32f2f;">Account Deleted</h2>
     <p>Hello ${name},</p>
@@ -17,7 +17,7 @@ userDeleted: ({ name, email }) => `
     <p style="font-size:12px;color:#888;">AQHerbal Team</p>
   </div>
 `,
-registration: ({ name, email }) => `
+  registration: ({ name, email }) => `
     <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;padding:24px;background:#f9f9f9;border-radius:8px;">
       <h2 style="color:#2e7d32;">Welcome to AQHerbal, ${name}!</h2>
       <p>Thank you for registering with AQHerbal. Your account has been created successfully.</p>
@@ -48,7 +48,7 @@ registration: ({ name, email }) => `
       <p style="font-size:12px;color:#888;">AQHerbal Security Team</p>
     </div>
   `,
-  verification: ({ name, email, link }) => `
+  verification: ({ name, _email, link }) => `
     <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;padding:24px;background:#f9f9f9;border-radius:8px;">
       <h2 style="color:#388e3c;">Verify Your Email</h2>
       <p>Hello ${name},</p>
@@ -99,11 +99,11 @@ export const sendPasswordChangeEmail = async ({ to, name, email }) => {
   });
 };
 
-export const sendVerificationEmail = async ({ to, name, email, link }) => {
+export const sendVerificationEmail = async ({ to, name, _email, link }) => {
   return sendEmail({
     to,
     subject: 'Verify Your AQHerbal Email',
-    html: emailTemplates.verification({ name, email, link })
+    html: emailTemplates.verification({ name, email: to, link })
   });
 };
 
@@ -116,30 +116,30 @@ export const sendNotificationEmail = async ({ to, message }) => {
 };
 import nodemailer from 'nodemailer';
 import logger from '../utils/logger.js';
-import config from '../config/env.js';
+import { config } from '../config/config.js';
 
 // Debug log for SMTP config
 logger.info('SMTP Config:', {
-  host: process.env.SMTP_HOST,
-  port: process.env.SMTP_PORT,
-  user: process.env.SMTP_USER,
-  pass: process.env.SMTP_PASS ? '***' : undefined
+  host: config.smtp.host,
+  port: config.smtp.port,
+  user: config.smtp.user,
+  pass: config.smtp.pass ? '***' : undefined
 });
 
 const transporter = nodemailer.createTransport({
-  host: config.smtpHost,
-  port: Number(config.smtpPort),
+  host: config.smtp.host,
+  port: Number(config.smtp.port),
   secure: false,
   auth: {
-    user: config.smtpUser,
-    pass: config.smtpPass
+    user: config.smtp.user,
+    pass: config.smtp.pass
   }
 });
 
 export const sendEmail = async ({ to, subject, html }) => {
   try {
     const info = await transporter.sendMail({
-      from: `AQHerbal <${config.smtpUser}>`,
+      from: `AQHerbal <${config.smtp.user}>`,
       to,
       subject,
       html

@@ -7,6 +7,9 @@ import paymentRoutes from './modules/payment/routes/index.js';
 import reviewRoutes from './modules/reviews/routes/index.js';
 import authRoutes from './modules/auth/routes/index.js';
 import adminRoutes from './modules/admin/routes/index.js';
+import couponRoutes from './modules/coupons/routes/index.js';
+import inventoryRoutes from './modules/inventory/routes/index.js';
+import notificationRoutes from './modules/notifications/routes/index.js';
 import { authorizeAdmin } from './middlewares/admin.middleware.js';
 
 
@@ -20,4 +23,7 @@ export const appRoutes = (app) => {
   app.use('/api/v1/reviews', reviewRoutes);
   app.use('/api/v1/auth', authRoutes);
   app.use('/api/v1/admin', authorizeAdmin, adminRoutes);
+  app.use('/api/v1/coupons', couponRoutes);
+  app.use('/api/v1/inventory', inventoryRoutes);
+  app.use('/api/v1/notifications', notificationRoutes);
 };

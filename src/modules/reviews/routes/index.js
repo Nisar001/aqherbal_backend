@@ -1,9 +1,32 @@
 import express from 'express';
-import { getReviews } from '../controllers/index.js';
+import {
+  createReview,
+  getProductReviews,
+  getMyReviews,
+  updateReview,
+  deleteReview,
+  getProductRatingSummary,
+  getPendingReviews,
+  approveReview,
+  rejectReview
+} from '../controllers/index.js';
+import { authenticate, authorizeAdmin } from '../../../middlewares/index.js';
 
 const router = express.Router();
-router.get('/view/:id', getReviews);
-router.put('/update/:id', getReviews);
-router.delete('/delete/:id', getReviews);
-router.get('/', getReviews);
+
+// Public routes
+router.get('/product/:productId', getProductReviews);
+router.get('/summary/:productId', getProductRatingSummary);
+
+// User routes
+router.post('/', authenticate, createReview);
+router.get('/my-reviews', authenticate, getMyReviews);
+router.put('/:id', authenticate, updateReview);
+router.delete('/:id', authenticate, deleteReview);
+
+// Admin routes
+router.get('/admin/pending', authenticate, authorizeAdmin, getPendingReviews);
+router.put('/admin/:id/approve', authenticate, authorizeAdmin, approveReview);
+router.put('/admin/:id/reject', authenticate, authorizeAdmin, rejectReview);
+
 export default router;

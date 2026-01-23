@@ -1,10 +1,20 @@
-import { body } from 'express-validator';
+import Joi from 'joi';
 
-export const paymentValidation = [
-  body('orderId').isMongoId().withMessage('Valid order ID required'),
-  body('userId').isMongoId().withMessage('Valid user ID required'),
-  body('amount').isFloat({ gt: 0 }).withMessage('Amount must be greater than 0'),
-  body('method').isString().withMessage('Payment method required'),
-  body('status').isString().withMessage('Payment status required'),
-  body('transactionId').optional().isString()
-];
+export const validateInitiatePayment = (data) => {
+  const schema = Joi.object({
+    orderId: Joi.string().required(),
+    method: Joi.string().valid('card', 'netbanking', 'upi', 'wallet').required()
+      .messages({
+        'any.only': 'Payment method must be one of: card, netbanking, upi, wallet'
+      })
+  });
+  return schema.validate(data);
+};
+
+export const validateWebhook = (data) => {
+  const schema = Joi.object({
+    event: Joi.string().required(),
+    data: Joi.object().required()
+  });
+  return schema.validate(data);
+};

@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { ROLES } from '../constants/roles.js';
 
 const addressSchema = new mongoose.Schema({
   street: String,
@@ -10,20 +11,22 @@ const addressSchema = new mongoose.Schema({
 
 
 const userSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
+  name: { type: String, required: true, trim: true },
+  email: { type: String, required: true, unique: true, lowercase: true, trim: true },
   password: { type: String, required: true },
   phone: { type: String, required: true },
   countryCode: { type: String, required: true },
   address: addressSchema,
-  role: { type: String, default: 'user' },
+  role: { type: String, enum: Object.values(ROLES), default: ROLES.USER },
   isActive: { type: Boolean, default: true },
   resetToken: { type: String },
   resetTokenExpires: { type: Date },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
-  isDeleted: { type: Boolean, default: false }
-});
+  isDeleted: { type: Boolean, default: false },
+  deletedAt: { type: Date }
+}, { timestamps: true });
+
+userSchema.index({ role: 1 });
+userSchema.index({ isDeleted: 1 });
 
 
 export const UserModel = mongoose.model('User', userSchema);

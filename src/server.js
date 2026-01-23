@@ -8,8 +8,11 @@ import { requestLogger } from './middlewares/logger.middleware.js';
 import { applySecurityMiddlewares } from './middlewares/security.middleware.js';
 import { suspiciousRateLimiter, normalRateLimiter } from './middlewares/rateLimit.middleware.js';
 import { ipBlacklistMiddleware } from './middlewares/ipBlacklist.middleware.js';
+import { resolveIpMiddleware } from './middlewares/ip.middleware.js';
+import { sanitizeRequestMiddleware } from './middlewares/sanitize.middleware.js';
 import logger from './utils/logger.js';
 import { connectDB } from './config/index.js';
+import { setupSwagger } from './docs/swagger.js';
 
 dotenv.config();
 
@@ -18,6 +21,8 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(resolveIpMiddleware);
+app.use(sanitizeRequestMiddleware);
 applySecurityMiddlewares(app);
 app.use(ipBlacklistMiddleware);
 app.use(requestLogger);
@@ -28,6 +33,10 @@ app.use('/api/admin', suspiciousRateLimiter);
 app.use('/api', normalRateLimiter);
 
 appRoutes(app);
+setupSwagger(app);
+
+// Centralized error handler
+app.use(errorHandler);
 
 // Block direct /api access and undefined endpoints
 app.use('/api', (req, res, next) => {

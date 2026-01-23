@@ -1,0 +1,7 @@
+node_modules/
+dist/
+coverage/
+build-info.json
+.env*
+logs/
+*.lock

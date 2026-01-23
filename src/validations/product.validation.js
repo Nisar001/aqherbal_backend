@@ -9,3 +9,5 @@ export const productValidation = [
   body('tags').optional().isArray(),
   body('images').optional().isArray()
 ];
+
+export const validateCreateProduct = productValidation;

@@ -1,12 +1,16 @@
 import mongoose from 'mongoose';
 
 const categorySchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  description: String,
+  name: { type: String, required: true, trim: true },
+  description: { type: String, trim: true },
   parentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Category' },
   image: String,
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
-});
+  isDeleted: { type: Boolean, default: false },
+  deletedAt: { type: Date }
+}, { timestamps: true });
+
+categorySchema.index({ name: 1 }, { unique: true });
+categorySchema.index({ parentId: 1 });
+categorySchema.index({ isDeleted: 1 });
 
 export const CategoryModel = mongoose.model('Category', categorySchema);

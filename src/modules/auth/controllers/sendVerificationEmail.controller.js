@@ -1,6 +1,7 @@
 // Removed incorrect import of User
 import { responseHelper } from '../../../helpers/index.js';
 import { sendEmail } from '../../../services/email.service.js';
+import { UserModel } from '../../../models/index.js';
 
 export const sendVerificationEmail = async (req, res) => {
   try {

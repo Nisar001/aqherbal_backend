@@ -6,3 +6,5 @@ export const categoryValidation = [
   body('parentId').optional().isMongoId(),
   body('image').optional().isString()
 ];
+
+export const validateCreateCategory = categoryValidation;

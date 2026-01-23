@@ -1,9 +1,26 @@
 import express from 'express';
-import { getPayments } from '../controllers/index.js';
+import {
+  initiatePayment,
+  handleStripeWebhook,
+  handleRazorpayWebhook,
+  getPaymentHistory,
+  retryPayment,
+  getFailedPayments
+} from '../controllers/index.js';
+import { authenticate, authorizeAdmin } from '../../../middlewares/index.js';
 
 const router = express.Router();
-router.get('/view/:id', getPayments);
-router.put('/update/:id', getPayments);
-router.delete('/delete/:id', getPayments);
-router.get('/', getPayments);
+
+// User routes
+router.post('/initiate', authenticate, initiatePayment);
+router.get('/history', authenticate, getPaymentHistory);
+router.post('/retry/:id', authenticate, retryPayment);
+
+// Webhooks (no auth required, but should verify signature)
+router.post('/webhook/stripe', handleStripeWebhook);
+router.post('/webhook/razorpay', handleRazorpayWebhook);
+
+// Admin routes
+router.get('/admin/failed', authenticate, authorizeAdmin, getFailedPayments);
+
 export default router;

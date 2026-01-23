@@ -1,4 +1,5 @@
 import rateLimit from 'express-rate-limit';
+import { config } from '../config/config.js';
 
 function parseWindowMs(str) {
   if (!str) return 15 * 60 * 1000;
@@ -8,8 +9,8 @@ function parseWindowMs(str) {
 }
 
 export const suspiciousRateLimiter = rateLimit({
-  windowMs: parseWindowMs(process.env.RATE_LIMIT_WINDOW),
-  max: Number(process.env.SUSPICIOUS_RATE_LIMIT_MAX) || 20,
+  windowMs: parseWindowMs(config.rateLimitWindow),
+  max: Number(config.suspiciousRateLimitMax),
   keyGenerator: (req) => req.userIp || req.headers['x-forwarded-for'] || req.connection.remoteAddress,
   handler: (req, res) => {
     return res.status(429).json({
@@ -20,8 +21,8 @@ export const suspiciousRateLimiter = rateLimit({
 });
 
 export const normalRateLimiter = rateLimit({
-  windowMs: parseWindowMs(process.env.RATE_LIMIT_WINDOW),
-  max: Number(process.env.RATE_LIMIT_MAX) || 200,
+  windowMs: parseWindowMs(config.rateLimitWindow),
+  max: Number(config.rateLimitMax),
   keyGenerator: (req) => req.userIp || req.headers['x-forwarded-for'] || req.connection.remoteAddress,
   handler: (req, res) => {
     return res.status(429).json({

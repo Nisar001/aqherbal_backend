@@ -36,5 +36,16 @@ export const responseHelper = {
   },
   forbidden: (res, message = 'Forbidden', status = 403, errors = []) => {
     return res.status(status).json({ success: false, message, errors });
+  },
+  notFound: (res, message = 'Not Found', status = 404) => {
+    return res.status(status).json({ success: false, message });
   }
+};
+
+// Generic response function with flexible parameters
+export const response = (res, status = 200, message = 'Success', data = null, errors = null) => {
+  const payload = { success: status >= 200 && status < 300, message };
+  if (data !== null) payload.data = data;
+  if (errors !== null) payload.errors = errors;
+  return res.status(status).json(payload);
 };

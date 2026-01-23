@@ -1,22 +1,14 @@
-import dotenv from 'dotenv'
-dotenv.config();
-
 import mongoose from 'mongoose';
-
-export const config = {
-  port: process.env.PORT || 5000,
-  dbUrl: process.env.DB_URL || '',
-  jwtSecret: process.env.JWT_SECRET || 'secret',
-};
+import logger from '../utils/logger.js';
+import { config } from './config.js';
 
 export const connectDB = async () => {
   try {
-        await mongoose.connect(config.dbUrl);
-        console.log('MongoDB connected');
+    await mongoose.connect(config.dbUrl);
+    logger.info('MongoDB connected');
   } catch (error) {
-        console.error('MongoDB connection error:', error.message);
-        console.error('Full error:', error);
-        console.error('DB URL:', config.dbUrl);
+    logger.error({ message: 'MongoDB connection error', error: error.message, stack: error.stack });
+    logger.error({ dbUrl: config.dbUrl });
     process.exit(1);
   }
 };

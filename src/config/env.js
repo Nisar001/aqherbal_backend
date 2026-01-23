@@ -12,7 +12,7 @@ const config = {
   cloudinaryName: process.env.CLOUDINARY_NAME || '',
   cloudinaryApiKey: process.env.CLOUDINARY_API_KEY || '',
   cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET || '',
-  nodeEnv: process.env.NODE_ENV || 'development',
+  nodeEnv: process.env.NODE_ENV || 'development'
   // Add more env values as needed
 };
 
