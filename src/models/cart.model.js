@@ -17,4 +17,7 @@ const cartSchema = new mongoose.Schema({
 
 cartSchema.index({ userId: 1, isDeleted: 1 });
 
-export const CartModel = mongoose.model('Cart', cartSchema);
+const CartModel = mongoose.model('Cart', cartSchema);
+
+export { CartModel };
+export default CartModel;

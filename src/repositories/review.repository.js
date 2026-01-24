@@ -67,10 +67,14 @@ class ReviewRepositoryImpl extends BaseRepository {
     return true;
   }
 
-  async incrementHelpful(reviewId) {
+  async incrementHelpful(reviewId, userId) {
+    // Use $addToSet to add user ID only if not already present (atomic operation)
     return ReviewModel.findByIdAndUpdate(
       reviewId,
-      { $inc: { helpfulCount: 1 } },
+      {
+        $inc: { helpfulCount: 1 },
+        $addToSet: { helpfulBy: userId } // Atomic add-to-set prevents duplicates
+      },
       { new: true }
     );
   }

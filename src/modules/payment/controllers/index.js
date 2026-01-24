@@ -25,7 +25,7 @@ export const handleStripeWebhook = async (req, res, next) => {
     const signature = req.headers['stripe-signature'];
     const event = await PaymentService.verifyStripeWebhook(
       signature,
-      req.body,
+      req.rawBody || req.body,
       process.env.STRIPE_WEBHOOK_SECRET
     );
 
@@ -46,6 +46,8 @@ export const handleStripeWebhook = async (req, res, next) => {
 export const handleRazorpayWebhook = async (req, res, next) => {
   try {
     const { event, payload } = req.body;
+    const signature = req.headers['x-razorpay-signature'];
+    await PaymentService.verifyRazorpayWebhook(signature, req.rawBody || req.body, process.env.RAZORPAY_WEBHOOK_SECRET);
 
     switch (event) {
     case 'payment.authorized': {

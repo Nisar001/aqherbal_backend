@@ -12,6 +12,7 @@ const reviewSchema = new mongoose.Schema({
   rejectionReason: String,
   isVerified: { type: Boolean, default: false }, // Set to true only if user purchased product
   helpfulCount: { type: Number, default: 0 },
+  helpfulBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // Track users who found it helpful (prevent duplicates)
   isDeleted: { type: Boolean, default: false, index: true },
   deletedAt: { type: Date }
 }, { timestamps: true });
@@ -21,4 +22,7 @@ reviewSchema.index({ userId: 1, isDeleted: 1 });
 reviewSchema.index({ status: 1, isDeleted: 1 });
 reviewSchema.index({ isVerified: 1 });
 
-export const ReviewModel = mongoose.model('Review', reviewSchema);
+const ReviewModel = mongoose.model('Review', reviewSchema);
+
+export { ReviewModel };
+export default ReviewModel;

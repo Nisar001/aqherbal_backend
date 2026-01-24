@@ -31,3 +31,42 @@ export const normalRateLimiter = rateLimit({
     });
   }
 });
+
+const buildRateLimiter = ({ windowMs, max, message }) => rateLimit({
+  windowMs,
+  max,
+  keyGenerator: (req) => req.userIp || req.headers['x-forwarded-for'] || req.connection.remoteAddress,
+  handler: (req, res) => res.status(429).json({ success: false, message })
+});
+
+const sensitiveWindow = parseWindowMs(config.sensitiveRateLimitWindow);
+
+export const authRateLimiter = buildRateLimiter({
+  windowMs: sensitiveWindow,
+  max: Number(config.rateLimitLoginMax),
+  message: 'Too many auth attempts. Please slow down.'
+});
+
+export const reviewRateLimiter = buildRateLimiter({
+  windowMs: sensitiveWindow,
+  max: Number(config.rateLimitReviewMax),
+  message: 'Too many review attempts. Please try again later.'
+});
+
+export const couponRateLimiter = buildRateLimiter({
+  windowMs: sensitiveWindow,
+  max: Number(config.rateLimitCouponMax),
+  message: 'Too many coupon requests. Please wait before retrying.'
+});
+
+export const contactRateLimiter = buildRateLimiter({
+  windowMs: sensitiveWindow,
+  max: Number(config.rateLimitContactMax),
+  message: 'Too many contact requests. Please try again later.'
+});
+
+export const webhookRateLimiter = buildRateLimiter({
+  windowMs: sensitiveWindow,
+  max: Number(config.rateLimitWebhookMax),
+  message: 'Too many webhook calls.'
+});

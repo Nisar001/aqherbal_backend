@@ -3,6 +3,7 @@ import { validate } from '../../../middlewares/validation.middleware.js';
 import { validateCreateProduct } from '../../../validations/product.validation.js';
 import { validateCreateCategory } from '../../../validations/category.validation.js';
 import * as adminController from '../controllers/index.js';
+import * as invoiceController from '../controllers/invoice.controller.js';
 
 const router = express.Router();
 
@@ -23,6 +24,18 @@ router.delete('/products/:id', adminController.deleteProduct);
 router.post('/categories', validate(validateCreateCategory), adminController.createCategory);
 router.put('/categories/:id', adminController.updateCategory);
 router.delete('/categories/:id', adminController.deleteCategory);
+
+// Invoice Management
+router.post('/invoices/orders/:orderId/generate', invoiceController.generateInvoice);
+router.get('/invoices/orders/:orderId', invoiceController.getOrderInvoice);
+router.get('/invoices/:id', invoiceController.getInvoice);
+router.get('/invoices', invoiceController.listInvoices);
+router.put('/invoices/:id/status', invoiceController.updateInvoiceStatus);
+router.post('/invoices/:id/payment', invoiceController.recordInvoicePayment);
+router.post('/invoices/:id/cancel', invoiceController.cancelInvoice);
+router.delete('/invoices/:id', invoiceController.deleteInvoice);
+router.get('/invoices/:id/download', invoiceController.downloadInvoicePDF);
+router.get('/invoices/:id/view', invoiceController.viewInvoicePDF);
 
 // Analytics
 router.get('/dashboard/stats', adminController.getDashboardStats);

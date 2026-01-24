@@ -1,12 +1,18 @@
 import Joi from 'joi';
 
+// Support both traditional (street/zip) and frontend format (line1/line2/pincode)
 const addressSchema = Joi.object({
-  street: Joi.string().required(),
+  name: Joi.string().optional(),
+  phone: Joi.string().optional(),
+  street: Joi.string().optional(),
+  line1: Joi.string().optional(),
+  line2: Joi.string().optional().allow(''),
   city: Joi.string().required(),
   state: Joi.string().required(),
-  zip: Joi.string().required(),
-  country: Joi.string().required()
-});
+  zip: Joi.string().optional(),
+  pincode: Joi.string().optional(),
+  country: Joi.string().default('India')
+}).or('street', 'line1').or('zip', 'pincode');
 
 export const validateCreateOrder = (data) => {
   const schema = Joi.object({

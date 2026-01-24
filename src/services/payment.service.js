@@ -3,7 +3,9 @@ import { OrderRepository } from '../repositories/order.repository.js';
 import { OrderService } from './order.service.js';
 import { AppError } from '../middlewares/error.middleware.js';
 import { PAYMENT_STATUS } from '../constants/paymentStatus.js';
+import { BUSINESS_CONFIG } from '../config/business.config.js';
 import Razorpay from 'razorpay';
+import Stripe from 'stripe';
 import crypto from 'crypto';
 
 export const PaymentService = {
@@ -19,7 +21,7 @@ export const PaymentService = {
     }
 
     // Validate payment method
-    const validMethods = ['card', 'netbanking', 'upi', 'wallet'];
+    const validMethods = BUSINESS_CONFIG.PAYMENT.SUPPORTED_METHODS;
     if (!validMethods.includes(method)) {
       throw new AppError('Invalid payment method', 400);
     }
@@ -29,7 +31,7 @@ export const PaymentService = {
       orderId,
       userId,
       amount: order.totalAmount,
-      currency: 'INR',
+      currency: BUSINESS_CONFIG.PAYMENT.DEFAULT_CURRENCY,
       method,
       status: PAYMENT_STATUS.PENDING,
       metadata: {
@@ -41,17 +43,9 @@ export const PaymentService = {
     // 3. Generate payment intent based on method
     let paymentIntent;
     try {
-      switch (method) {
-      case 'card':
-      case 'netbanking':
-      case 'upi':
-        // All Razorpay methods
+      if (BUSINESS_CONFIG.PAYMENT.RAZORPAY_METHODS.includes(method)) {
         paymentIntent = await this.createRazorpayOrder(order, payment);
-        break;
-      case 'wallet':
-        paymentIntent = await this.processWalletPayment(userId, order, payment);
-        break;
-      default:
+      } else {
         throw new AppError('Invalid payment method', 400);
       }
     } catch (err) {
@@ -105,12 +99,6 @@ export const PaymentService = {
       throw new AppError(`Razorpay order creation failed: ${error.message}`, 500);
     }
   },
-
-  async processWalletPayment(_userId, _order, _payment) {
-    // TODO: Implement wallet payment (requires user wallet model)
-    throw new AppError('Wallet payment not yet implemented', 501);
-  },
-
   async verifyRazorpaySignature(razorpayOrderId, razorpayPaymentId, signature) {
     try {
       const body = razorpayOrderId + '|' + razorpayPaymentId;
@@ -126,6 +114,36 @@ export const PaymentService = {
       return true;
     } catch (error) {
       throw new AppError(`Signature verification failed: ${error.message}`, 400);
+    }
+  },
+
+  async verifyRazorpayWebhook(signature, body, secret = process.env.RAZORPAY_WEBHOOK_SECRET) {
+    if (!signature || !secret) {
+      throw new AppError('Missing Razorpay webhook signature or secret', 400);
+    }
+    const payload = Buffer.isBuffer(body) || typeof body === 'string' ? body : JSON.stringify(body);
+    const expected = crypto
+      .createHmac('sha256', secret)
+      .update(payload)
+      .digest('hex');
+    if (expected !== signature) {
+      throw new AppError('Invalid Razorpay webhook signature', 400);
+    }
+    return true;
+  },
+
+  async verifyStripeWebhook(signature, payload, secret = process.env.STRIPE_WEBHOOK_SECRET) {
+    if (!signature || !secret) {
+      throw new AppError('Missing Stripe webhook signature or secret', 400);
+    }
+    const rawPayload = Buffer.isBuffer(payload) || typeof payload === 'string'
+      ? payload
+      : JSON.stringify(payload);
+    try {
+      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2024-11-20' });
+      return stripe.webhooks.constructEvent(rawPayload, signature, secret);
+    } catch (error) {
+      throw new AppError(`Stripe webhook verification failed: ${error.message}`, 400);
     }
   },
 
@@ -168,7 +186,23 @@ export const PaymentService = {
     // Update order status and handle stock deduction
     await OrderService.handlePaymentSuccess(payment.orderId, paymentId);
 
-    // TODO: Queue email notification for order confirmation
+    // Send email notification for order confirmation
+    try {
+      const { sendPaymentSuccessEmail } = await import('./email.service.js');
+      const order = await OrderService.getOrderById(payment.orderId);
+      const user = order.userId;
+
+      await sendPaymentSuccessEmail({
+        to: user.email,
+        name: user.name || user.firstName || 'Customer',
+        orderNumber: order.orderNumber,
+        amount: updatedPayment.amount,
+        paymentMethod: updatedPayment.method
+      });
+    } catch (emailError) {
+      // Log but don't throw - payment already succeeded
+      console.error('Failed to send payment success email:', emailError.message);
+    }
 
     return updatedPayment;
   },
@@ -192,7 +226,23 @@ export const PaymentService = {
     // Release stock reservation
     await OrderService.handlePaymentFailure(payment.orderId, reason);
 
-    // TODO: Queue email notification for payment failure
+    // Send email notification for payment failure
+    try {
+      const { sendPaymentFailedEmail } = await import('./email.service.js');
+      const order = await OrderService.getOrderById(payment.orderId);
+      const user = order.userId;
+
+      await sendPaymentFailedEmail({
+        to: user.email,
+        name: user.name || user.firstName || 'Customer',
+        orderNumber: order.orderNumber,
+        amount: updatedPayment.amount,
+        reason
+      });
+    } catch (emailError) {
+      // Log but don't throw - payment failure already recorded
+      console.error('Failed to send payment failure email:', emailError.message);
+    }
 
     return updatedPayment;
   },
@@ -223,7 +273,23 @@ export const PaymentService = {
       throw new AppError('Only failed payments can be retried', 400);
     }
 
+    const retries = (payment.metadata && payment.metadata.retryCount) || 0;
+    if (retries >= BUSINESS_CONFIG.PAYMENT.MAX_RETRY_ATTEMPTS) {
+      throw new AppError('Retry limit reached for this payment', 400);
+    }
+
+    const windowMs = BUSINESS_CONFIG.PAYMENT.RETRY_WINDOW_HOURS * 60 * 60 * 1000;
+    if (Date.now() - payment.createdAt.getTime() > windowMs) {
+      throw new AppError('Payment is too old to retry', 400);
+    }
+
+    await PaymentRepository.incrementRetryCount(paymentId);
+
     const order = await OrderRepository.findById(payment.orderId);
     return this.initiatePayment(userId, order._id, payment.method);
+  },
+
+  async getFailedPayments(hours = 24) {
+    return PaymentRepository.findFailedPayments(hours);
   }
 };

@@ -170,8 +170,25 @@ export const ReviewService = {
     };
   },
 
-  async markHelpful(reviewId, _userId) {
-    // TODO: Implement user helpful tracking (prevent duplicate votes)
-    return ReviewRepository.incrementHelpful(reviewId);
+  async markHelpful(reviewId, userId) {
+    // Validate inputs
+    if (!reviewId || !userId) {
+      throw new AppError('Review ID and User ID are required', 400);
+    }
+
+    // Check if user already marked this review as helpful
+    const review = await ReviewRepository.findById(reviewId);
+    if (!review) {
+      throw new AppError('Review not found', 404);
+    }
+
+    // Prevent duplicate helpful votes from same user
+    const alreadyMarked = review.helpfulBy && review.helpfulBy.includes(userId);
+    if (alreadyMarked) {
+      throw new AppError('You have already marked this review as helpful', 400);
+    }
+
+    // Add user to helpfulBy list and increment count
+    return ReviewRepository.incrementHelpful(reviewId, userId);
   }
 };

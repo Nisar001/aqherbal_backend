@@ -34,4 +34,7 @@ productSchema.index({ categoryId: 1 });
 productSchema.index({ name: 'text', tags: 'text', brand: 'text' });
 productSchema.index({ isDeleted: 1 });
 
-export const ProductModel = mongoose.model('Product', productSchema);
+const ProductModel = mongoose.model('Product', productSchema);
+
+export { ProductModel };
+export default ProductModel;

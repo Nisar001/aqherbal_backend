@@ -4,8 +4,7 @@ import { ProductRepository } from '../repositories/product.repository.js';
 import { CouponService } from './coupon.service.js';
 import { AppError } from '../middlewares/error.middleware.js';
 import { ORDER_STATUS } from '../constants/orderStatus.js';
-
-const SHIPPING_COST = 0; // Free shipping for now
+import { calculateTax, calculateShipping } from '../config/business.config.js';
 
 export const OrderService = {
   async createOrderFromCart(userId, shippingAddress, couponCode = null) {
@@ -16,6 +15,12 @@ export const OrderService = {
     }
 
     // 2. Validate all products are still available and stock hasn't changed
+    // IMPORTANT: This validation is performed again here, but there is still a potential race condition
+    // between this check and the actual reservation. To fully mitigate this in production:
+    // - Use database-level transactions (MongoDB multi-doc transactions)
+    // - Implement inventory locking/reservation at creation time
+    // - Or use a queue-based system to serialize order creation per user
+    // Current implementation is acceptable for medium traffic; upgrade for high traffic scenarios
     for (const item of cart.items) {
       const product = await ProductRepository.findById(item.productId);
       if (!product || product.isDeleted || !product.isActive || !product.isApproved) {
@@ -42,8 +47,9 @@ export const OrderService = {
       const discountedPrice = item.priceAtPurchase * (1 - item.discountApplied / 100);
       return sum + discountedPrice * item.quantity;
     }, 0);
-    const tax = subtotal * 0.1; // 10% tax
-    let totalAmount = subtotal + tax + SHIPPING_COST;
+    const tax = calculateTax(subtotal, shippingAddress?.state);
+    const shippingCost = calculateShipping(subtotal);
+    let totalAmount = subtotal + tax + shippingCost;
 
     // 4.5. Apply coupon if provided
     let couponDiscount = 0;
@@ -74,7 +80,7 @@ export const OrderService = {
       items,
       subtotal,
       tax,
-      shippingCost: SHIPPING_COST,
+      shippingCost,
       totalAmount,
       couponCode: appliedCoupon?.code || null,
       couponDiscount: appliedCoupon?.discountAmount || 0,
@@ -163,7 +169,7 @@ export const OrderService = {
         const product = await ProductRepository.findById(reservation.productId);
         if (product) {
           product.stock -= reservation.quantity;
-          product.save();
+          await product.save();
         }
       }
     }
@@ -174,7 +180,7 @@ export const OrderService = {
         const product = await ProductRepository.findById(reservation.productId);
         if (product) {
           product.stock += reservation.quantity;
-          product.save();
+          await product.save();
         }
       }
     }

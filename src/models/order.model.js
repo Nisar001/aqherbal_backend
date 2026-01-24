@@ -2,11 +2,16 @@ import mongoose from 'mongoose';
 import { ORDER_STATUS } from '../constants/orderStatus.js';
 
 const addressSchema = new mongoose.Schema({
+  name: String,
+  phone: String,
   street: String,
+  line1: String,
+  line2: String,
   city: String,
   state: String,
   zip: String,
-  country: String
+  pincode: String,
+  country: { type: String, default: 'India' }
 });
 
 const stockReservationSchema = new mongoose.Schema({
@@ -57,4 +62,7 @@ orderSchema.index({ userId: 1, isDeleted: 1 });
 orderSchema.index({ status: 1, isDeleted: 1 });
 orderSchema.index({ paymentStatus: 1 });
 
-export const OrderModel = mongoose.model('Order', orderSchema);
+const OrderModel = mongoose.model('Order', orderSchema);
+
+export { OrderModel };
+export default OrderModel;

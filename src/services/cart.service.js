@@ -1,11 +1,10 @@
 import { CartRepository } from '../repositories/cart.repository.js';
 import { ProductRepository } from '../repositories/product.repository.js';
 import { AppError } from '../middlewares/error.middleware.js';
+import { calculateTax } from '../config/business.config.js';
 
-const TAX_RATE = 0.1; // 10% tax
-
-const calculateTotals = (subtotal) => {
-  const tax = subtotal * TAX_RATE;
+const calculateTotals = (subtotal, state = null) => {
+  const tax = calculateTax(subtotal, state);
   const total = subtotal + tax;
   return { subtotal, tax, total };
 };

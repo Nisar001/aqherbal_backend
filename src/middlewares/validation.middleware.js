@@ -24,13 +24,23 @@ export const validate = (validations = []) => {
         }
       } catch (error) {
         const details = error?.details || [{ message: error.message }];
-        return res.status(400).json({ errors: details });
+        const errors = details.map((d) => ({ message: d.message }));
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid input detected',
+          errors
+        });
       }
     }
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      const safeErrors = errors.array().map(({ msg, param }) => ({ message: msg, field: param }));
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid input detected',
+        errors: safeErrors
+      });
     }
 
     return next();

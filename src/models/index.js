@@ -8,3 +8,4 @@ export * from './cart.model.js';
 export * from './review.model.js';
 export * from './payment.model.js';
 export * from './notification.model.js';
+export * from './shipment.model.js';

@@ -13,4 +13,7 @@ categorySchema.index({ name: 1 }, { unique: true });
 categorySchema.index({ parentId: 1 });
 categorySchema.index({ isDeleted: 1 });
 
-export const CategoryModel = mongoose.model('Category', categorySchema);
+const CategoryModel = mongoose.model('Category', categorySchema);
+
+export { CategoryModel };
+export default CategoryModel;

@@ -170,25 +170,25 @@ class InventoryServiceImpl {
 
   async sendLowStockAlert(product, currentStock) {
     try {
-      // TODO: Implement email sending to admin
-      console.info(
-        `[LOW STOCK ALERT] Product: ${product.name} (${product.sku}) - Current Stock: ${currentStock}, Threshold: ${product.lowStockThreshold || 10}`
-      );
+      const { sendLowStockAlertEmail } = await import('./email.service.js');
 
-      // In production, send email to admin
-      // await sendEmail({
-      //   to: process.env.ADMIN_EMAIL,
-      //   subject: `Low Stock Alert: ${product.name}`,
-      //   template: 'lowStockAlert',
-      //   data: {
-      //     productName: product.name,
-      //     sku: product.sku,
-      //     currentStock,
-      //     threshold: product.lowStockThreshold || 10
-      //   }
-      // });
+      await sendLowStockAlertEmail({
+        to: process.env.ADMIN_EMAIL,
+        productName: product.name,
+        sku: product.sku,
+        currentStock,
+        threshold: product.lowStockThreshold || 10,
+        productUrl: process.env.ADMIN_URL ? `${process.env.ADMIN_URL}/products/${product._id}` : null
+      });
     } catch (error) {
-      console.error('Error sending low stock alert:', error);
+      // Use logger instead of console.error
+      const logger = await import('../utils/logger.js').then(m => m.default);
+      logger.error('Error sending low stock alert:', {
+        error: error.message,
+        productId: product._id,
+        productName: product.name
+      });
+      // Don't throw - inventory operations should continue
     }
   }
 

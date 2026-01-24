@@ -52,6 +52,25 @@ class PaymentRepositoryImpl extends BaseRepository {
     );
   }
 
+  async incrementRetryCount(paymentId) {
+    const payment = await PaymentModel.findById(paymentId);
+    if (!payment) return null;
+    const currentCount = (payment.metadata && payment.metadata.retryCount) || 0;
+    return PaymentModel.findByIdAndUpdate(
+      paymentId,
+      {
+        $set: {
+          metadata: {
+            ...payment.metadata,
+            retryCount: currentCount + 1,
+            lastRetryAt: new Date()
+          }
+        }
+      },
+      { new: true }
+    );
+  }
+
   async findFailedPayments(hours = 24) {
     const since = new Date(Date.now() - hours * 60 * 60 * 1000);
     return PaymentModel.find({

@@ -132,3 +132,40 @@ export const getUnreadCount = async (req, res, next) => {
     next(error);
   }
 };
+
+// Admin: Send notification to user(s)
+export const sendNotification = async (req, res, next) => {
+  try {
+    const { userId, userIds, type, title, message, data, priority } = req.body;
+
+    if (!userId && (!userIds || userIds.length === 0)) {
+      throw new AppError('Must specify userId or userIds', 400);
+    }
+
+    const targetUsers = userId ? [userId] : userIds;
+    const notifications = [];
+
+    for (const uid of targetUsers) {
+      const notification = new NotificationModel({
+        userId: uid,
+        type: type || 'info',
+        title: title || 'Notification',
+        message,
+        data: data || {},
+        priority: priority || 'normal',
+        isRead: false
+      });
+      await notification.save();
+      notifications.push(notification);
+    }
+
+    return successResponse(
+      res,
+      { count: notifications.length, notifications },
+      'Notifications sent successfully',
+      201
+    );
+  } catch (error) {
+    next(error);
+  }
+};
