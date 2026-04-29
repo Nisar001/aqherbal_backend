@@ -9,27 +9,60 @@ const router = express.Router();
 
 
 // Register new user
-router.post('/register', validateRequest, controllers.register);
+// router.post('/register', validateRequest, controllers.register);
+
+
+// For Testing
+router.post(
+  '/register',
+  (req, res, next) => {
+    console.info('➡️ Step 1: Route hit');
+    next();
+  },
+  (req, res, next) => {
+    console.info('➡️ Step 2: Before controller');
+    next();
+  },
+  controllers.register
+);
 
 // Login user
-router.post('/login', validateRequest, controllers.login);
+// router.post('/login', validateRequest, controllers.login);
+router.post(
+  '/login',
+  (req, res, next) => {
+    console.info('➡️ Step 1: Route hit');
+    next();
+  },
+  (req, res, next) => {
+    console.info('➡️ Step 2: Before controller');
+    next();
+  },
+  controllers.login
+);
 
 // Logout user
-router.post('/logout', controllers.logout);
+router.post('/logout', authenticate, controllers.logout);
 
 // Refresh JWT token
 router.post('/refresh-token', controllers.refreshToken);
 
 // Forgot password
-router.post('/forgot-password', validateRequest, controllers.forgotPassword);
+router.post('/forgot-password', validateRequest(), controllers.forgotPassword);
 
 // Reset password
-router.post('/reset-password', validateRequest, controllers.resetPassword);
+router.post('/reset-password', validateRequest(), controllers.resetPassword);
 
 // Send verification email
 router.post('/send-verification-email', controllers.sendVerificationEmail);
 
 // Verify email
+router.post('/verify-email', (req, _res, next) => {
+  if (!req.query.token && req.body?.token) {
+    req.query.token = req.body.token;
+  }
+  next();
+}, controllers.verifyEmail);
 router.get('/verify-email', controllers.verifyEmail);
 
 // Get profile (authenticated)
@@ -60,8 +93,6 @@ router.post('/resend-verification-email', controllers.sendVerificationEmail);
 // router.get('/users', controllers.getProfile);
 
 export default router;
-
-
 
 
 

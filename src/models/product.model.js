@@ -3,6 +3,7 @@ import { INVENTORY_STATUS } from '../constants/inventoryStatus.js';
 
 const productSchema = new mongoose.Schema({
   name: { type: String, required: true, trim: true },
+  sku: { type: String, required: true, trim: true, unique: true },
   description: { type: String, trim: true },
   price: { type: Number, required: true, min: 0 },
   discount: { type: Number, default: 0, min: 0 },
@@ -26,6 +27,7 @@ const productSchema = new mongoose.Schema({
   rating: { type: Number, default: 0, min: 0, max: 5 },
   reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }],
   isActive: { type: Boolean, default: true },
+  isApproved: { type: Boolean, default: true },
   isDeleted: { type: Boolean, default: false },
   deletedAt: { type: Date }
 }, { timestamps: true });

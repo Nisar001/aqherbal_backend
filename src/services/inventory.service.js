@@ -32,7 +32,7 @@ class InventoryServiceImpl {
     }
 
     // Update product stock
-    const updatedProduct = await ProductRepository.update(productId, {
+    const updatedProduct = await ProductRepository.updateById(productId, {
       stock: newStock,
       $push: {
         stockHistory: {
@@ -70,7 +70,7 @@ class InventoryServiceImpl {
       throw new AppError('Product not found', 404);
     }
 
-    const updatedProduct = await ProductRepository.update(productId, {
+    const updatedProduct = await ProductRepository.updateById(productId, {
       lowStockThreshold: threshold
     });
 
@@ -83,7 +83,7 @@ class InventoryServiceImpl {
   }
 
   async getLowStockProducts(threshold = null) {
-    const products = await ProductRepository.model.find({
+    const products = await ProductRepository.model.findById({
       isDeleted: false,
       isActive: true
     });
@@ -141,7 +141,7 @@ class InventoryServiceImpl {
   }
 
   async getInventorySummary() {
-    const products = await ProductRepository.model.find({
+    const products = await ProductRepository.model.findById({
       isDeleted: false,
       isActive: true
     });

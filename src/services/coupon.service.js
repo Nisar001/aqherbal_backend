@@ -35,7 +35,10 @@ class CouponServiceImpl {
       throw new AppError('Percentage discount cannot exceed 100%', 400);
     }
 
-    const updated = await CouponRepository.update(couponId, data);
+    const updated = await CouponRepository.updateById(couponId, data);
+    if (!updated) {
+      throw new AppError('Failed to update coupon', 500);
+    }
     return updated;
   }
 
@@ -45,7 +48,7 @@ class CouponServiceImpl {
       throw new AppError('Coupon not found', 404);
     }
 
-    await CouponRepository.softDelete(couponId);
+    await CouponRepository.softDeleteById(couponId);
     return { message: 'Coupon deleted successfully' };
   }
 

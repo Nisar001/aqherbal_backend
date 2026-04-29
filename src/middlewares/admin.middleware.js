@@ -1,14 +1,26 @@
 import logger from '../utils/logger.js';
 import { ROLES } from '../constants/roles.js';
+import { UserModel } from '../models/user.model.js';
+import mongoose from 'mongoose';
 
 /**
  * Middleware to authorize admin access
  * Checks if user has ADMIN role
  */
-export const authorizeAdmin = (req, res, next) => {
-  if (req.user?.role !== ROLES.ADMIN) {
+export const authorizeAdmin = async (req, res, next) => {
+  const userId = req.user?._id || req.user?.id || req.user?.userId;
+  const user = userId && mongoose.Types.ObjectId.isValid(userId)
+    ? await UserModel.findById(userId).select('role email')
+    : null;
+
+  const effectiveRole = user?.role || req.user?.role;
+
+  if (effectiveRole !== ROLES.ADMIN) {
     logger.warn(`Unauthorized admin access attempt by user: ${req.user?.email}`);
     return res.status(403).json({ message: 'Forbidden: Admins only' });
+  }
+  if (user) {
+    req.user = { ...req.user, role: user.role, email: user.email };
   }
   next();
 };

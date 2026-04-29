@@ -1,12 +1,13 @@
 import { responseHelper } from '../../../helpers/index.js';
+import { invalidateToken } from '../../../middlewares/auth.middleware.js';
 
 // ...existing code...
 
 export const logout = async (req, res) => {
   try {
-    // For JWT, logout is handled client-side by deleting the token
-    // ...existing code...
-    return responseHelper.success(res, { message: 'Logged out successfully' });
+    const token = req.headers['authorization']?.split(' ')[1];
+    invalidateToken(token);
+    return responseHelper.success(res, null, 'logout successful');
   } catch (err) {
     return responseHelper.error(res, err.message);
   }

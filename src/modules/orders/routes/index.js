@@ -14,9 +14,12 @@ const router = express.Router();
 
 // User routes
 router.post('/', authenticate, createOrder);
+router.get('/', authenticate, getMyOrders);
 router.get('/my-orders', authenticate, getMyOrders);
 router.get('/view/:id', authenticate, getOrderById);
 router.delete('/:id/cancel', authenticate, cancelOrder);
+router.get('/:id', authenticate, getOrderById);
+router.put('/:id/cancel', authenticate, cancelOrder);
 
 // Admin routes
 router.put('/:id/status', authenticate, authorizeAdmin, updateOrderStatus);

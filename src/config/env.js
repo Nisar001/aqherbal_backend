@@ -12,17 +12,17 @@ const config = {
   dbUrl: process.env.DB_URL || process.env.MONGODB_URI || '',
   dbName: process.env.DB_NAME || 'aqherbal',
 
-  // JWT
-  jwtSecret: process.env.JWT_SECRET || 'secret',
-  jwtRefreshSecret: process.env.JWT_REFRESH_SECRET || 'refresh-secret',
+  // JWT - REQUIRED: Must be set in environment
+  jwtSecret: process.env.JWT_SECRET,
+  jwtRefreshSecret: process.env.JWT_REFRESH_SECRET,
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '1d',
   jwtRefreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d',
 
-  // Email (supports both EMAIL_* and SMTP_* prefixes)
-  emailHost: process.env.EMAIL_HOST || process.env.SMTP_HOST || '',
+  // Email - REQUIRED for production
+  emailHost: process.env.EMAIL_HOST || process.env.SMTP_HOST,
   emailPort: parseInt(process.env.EMAIL_PORT || process.env.SMTP_PORT || '587', 10),
-  emailUser: process.env.EMAIL_USER || process.env.SMTP_USER || '',
-  emailPassword: process.env.EMAIL_PASSWORD || process.env.SMTP_PASS || '',
+  emailUser: process.env.EMAIL_USER || process.env.SMTP_USER,
+  emailPassword: process.env.EMAIL_PASSWORD || process.env.SMTP_PASS,
   emailFrom: process.env.EMAIL_FROM || 'AQ Herbal <noreply@aqherbal.com>',
 
   // Legacy SMTP variables (deprecated, use EMAIL_* instead)
@@ -31,15 +31,15 @@ const config = {
   smtpUser: process.env.SMTP_USER || '',
   smtpPass: process.env.SMTP_PASS || '',
 
-  // Cloudinary (supports both CLOUDINARY_CLOUD_NAME and CLOUDINARY_NAME)
-  cloudinaryName: process.env.CLOUDINARY_CLOUD_NAME || process.env.CLOUDINARY_NAME || '',
-  cloudinaryApiKey: process.env.CLOUDINARY_API_KEY || '',
-  cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET || '',
+  // Cloudinary - REQUIRED for image uploads
+  cloudinaryName: process.env.CLOUDINARY_CLOUD_NAME || process.env.CLOUDINARY_NAME,
+  cloudinaryApiKey: process.env.CLOUDINARY_API_KEY,
+  cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET,
 
-  // Razorpay
-  razorpayKeyId: process.env.RAZORPAY_KEY_ID || '',
-  razorpayKeySecret: process.env.RAZORPAY_KEY_SECRET || '',
-  razorpayWebhookSecret: process.env.RAZORPAY_WEBHOOK_SECRET || '',
+  // Razorpay - REQUIRED for payment processing
+  razorpayKeyId: process.env.RAZORPAY_KEY_ID,
+  razorpayKeySecret: process.env.RAZORPAY_KEY_SECRET,
+  razorpayWebhookSecret: process.env.RAZORPAY_WEBHOOK_SECRET,
 
   // Stripe (optional)
   stripeSecretKey: process.env.STRIPE_SECRET_KEY || '',
@@ -75,5 +75,38 @@ const config = {
   indiaPostApiUrl: process.env.INDIA_POST_API_URL || 'https://www.indiapost.gov.in/_layouts/15/dop.portal.tracking/trackconsignment.aspx',
   indiaPostTimeout: parseInt(process.env.INDIA_POST_TIMEOUT || '10000', 10)
 };
+
+/**
+ * Validate required environment variables
+ * Ensures all critical secrets are configured before app starts
+ */
+const validateRequiredSecrets = () => {
+  const requiredSecrets = [
+    { key: 'JWT_SECRET', name: 'JWT Secret' },
+    { key: 'JWT_REFRESH_SECRET', name: 'JWT Refresh Secret' },
+    { key: 'RAZORPAY_KEY_ID', name: 'Razorpay Key ID' },
+    { key: 'RAZORPAY_KEY_SECRET', name: 'Razorpay Key Secret' }
+  ];
+
+  const missingSecrets = requiredSecrets.filter(
+    secret => !process.env[secret.key] || process.env[secret.key].trim() === ''
+  );
+
+  if (missingSecrets.length > 0) {
+    console.error(
+      '❌ CRITICAL: Missing required environment secrets:\n' +
+      missingSecrets.map(s => `   - ${s.name} (${s.key})`).join('\n') +
+      '\n\n⚠️  SECURITY: The application cannot start without these secrets.\n' +
+      '📖 See SECRETS_MANAGEMENT.md for setup instructions.\n'
+    );
+
+    process.env.NODE_ENV === 'production'
+      ? process.exit(1)
+      : console.warn('⚠️  WARNING: Running in non-production mode. Some secrets may be optional.\n');
+  }
+};
+
+// Validate secrets on module load
+validateRequiredSecrets();
 
 export default config;

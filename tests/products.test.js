@@ -232,8 +232,7 @@ describe('📦 Products & Categories', () => {
 
   // ============= CREATE PRODUCT TESTS (ADMIN ONLY) =============
   describe('POST /api/v1/products', () => {
-    
-    const validProduct = {
+    const buildValidProduct = () => ({
       name: 'New Herbal Product',
       sku: 'NEW-001',
       categoryId: testCategory._id.toString(),
@@ -241,13 +240,13 @@ describe('📦 Products & Categories', () => {
       stock: 50,
       description: 'High-quality herbal product',
       images: [],
-    };
+    });
 
     it('✓ Admin can create product', async () => {
       const res = await request(app)
         .post('/api/v1/products')
         .set('Authorization', `Bearer ${adminToken}`)
-        .send(validProduct);
+        .send(buildValidProduct());
 
       expect(res.status).toBe(201);
       expect(res.body).toHaveProperty('data');
@@ -258,7 +257,7 @@ describe('📦 Products & Categories', () => {
       const res = await request(app)
         .post('/api/v1/products')
         .set('Authorization', `Bearer ${userToken}`)
-        .send(validProduct);
+        .send(buildValidProduct());
 
       expect(res.status).toBe(403);
     });
@@ -266,7 +265,7 @@ describe('📦 Products & Categories', () => {
     it('✗ Unauthenticated user cannot create product', async () => {
       const res = await request(app)
         .post('/api/v1/products')
-        .send(validProduct);
+        .send(buildValidProduct());
 
       expect(res.status).toBe(401);
     });
@@ -288,7 +287,7 @@ describe('📦 Products & Categories', () => {
         .post('/api/v1/products')
         .set('Authorization', `Bearer ${adminToken}`)
         .send({
-          ...validProduct,
+          ...buildValidProduct(),
           price: -100,
         });
 
@@ -300,7 +299,7 @@ describe('📦 Products & Categories', () => {
         .post('/api/v1/products')
         .set('Authorization', `Bearer ${adminToken}`)
         .send({
-          ...validProduct,
+          ...buildValidProduct(),
           stock: -10,
         });
 
@@ -309,14 +308,14 @@ describe('📦 Products & Categories', () => {
 
     it('✗ Should fail with duplicate SKU', async () => {
       await Product.create({
-        ...validProduct,
+        ...buildValidProduct(),
         categoryId: testCategory._id,
       });
 
       const res = await request(app)
         .post('/api/v1/products')
         .set('Authorization', `Bearer ${adminToken}`)
-        .send(validProduct);
+        .send(buildValidProduct());
 
       expect(res.status).toBe(400);
     });

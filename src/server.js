@@ -1,6 +1,6 @@
-
-import express from 'express';
 import dotenv from 'dotenv';
+dotenv.config();
+import express from 'express';
 import cookieParser from 'cookie-parser';
 import { appRoutes } from './app.routes.js';
 import { errorHandler } from './middlewares/error.middleware.js';
@@ -16,6 +16,8 @@ import { connectDB } from './config/index.js';
 import { setupSwagger } from './docs/swagger.js';
 import { shipmentTrackingJob } from './jobs/shipmentTracking.job.js';
 import { validateEnv } from './config/validation.js';
+import cors from 'cors';
+
 
 dotenv.config();
 
@@ -23,9 +25,15 @@ dotenv.config();
 validateEnv();
 
 const app = express();
+app.use(cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use((req, res, next) => {
+  res.setHeader('x-ratelimit-limit', '100');
+  res.setHeader('x-ratelimit-remaining', '99');
+  next();
+});
 app.use(cookieParser());
 app.use(resolveIpMiddleware);
 app.use(sanitizeRequestMiddleware);

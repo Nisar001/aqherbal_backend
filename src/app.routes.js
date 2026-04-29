@@ -12,6 +12,7 @@ import inventoryRoutes from './modules/inventory/routes/index.js';
 import notificationRoutes from './modules/notifications/routes/index.js';
 import shipmentRoutes from './modules/shipments/routes/index.js';
 import { authorizeAdmin } from './middlewares/admin.middleware.js';
+import { authenticate } from './middlewares/auth.middleware.js';
 import { authRateLimiter, reviewRateLimiter, couponRateLimiter } from './middlewares/rateLimit.middleware.js';
 
 
@@ -24,7 +25,7 @@ export const appRoutes = (app) => {
   app.use('/api/v1/payments', paymentRoutes);
   app.use('/api/v1/reviews', reviewRateLimiter, reviewRoutes);
   app.use('/api/v1/auth', authRateLimiter, authRoutes);
-  app.use('/api/v1/admin', authorizeAdmin, adminRoutes);
+  app.use('/api/v1/admin', authenticate, authorizeAdmin, adminRoutes);
   app.use('/api/v1/coupons', couponRateLimiter, couponRoutes);
   app.use('/api/v1/inventory', inventoryRoutes);
   app.use('/api/v1/notifications', notificationRoutes);

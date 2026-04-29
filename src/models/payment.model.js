@@ -9,13 +9,13 @@ const paymentSchema = new mongoose.Schema({
   currency: { type: String, default: BUSINESS_CONFIG.PAYMENT.DEFAULT_CURRENCY },
   status: {
     type: String,
-    enum: Object.values(PAYMENT_STATUS),
+    enum: [...Object.values(PAYMENT_STATUS), 'initiated', 'completed'],
     default: PAYMENT_STATUS.PENDING,
     index: true
   },
-  method: { type: String, enum: ['card', 'netbanking', 'upi'], required: true },
+  method: { type: String, enum: ['card', 'netbanking', 'upi'], required: true, alias: 'paymentMethod' },
   gatewayTransactionId: String,
-  gatewayPaymentId: String,
+  gatewayPaymentId: { type: String, alias: 'razorpayPaymentId' },
   reference: String,
   metadata: mongoose.Schema.Types.Mixed,
   webhookVerified: { type: Boolean, default: false },

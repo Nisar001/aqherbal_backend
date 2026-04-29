@@ -1,6 +1,7 @@
 import express from 'express';
 import {
   initiatePayment,
+  verifyPayment,
   handleStripeWebhook,
   handleRazorpayWebhook,
   getPaymentHistory,
@@ -13,6 +14,7 @@ const router = express.Router();
 
 // User routes
 router.post('/initiate', authenticate, initiatePayment);
+router.post('/verify', authenticate, verifyPayment);
 router.get('/history', authenticate, getPaymentHistory);
 router.post('/retry/:id', authenticate, retryPayment);
 

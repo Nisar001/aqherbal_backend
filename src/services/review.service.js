@@ -19,15 +19,19 @@ export const ReviewService = {
 
     // 3. Verify purchase (if orderId provided)
     let isVerified = false;
-    if (orderId) {
-      const order = await OrderRepository.findById(orderId);
-      if (order && order.userId.toString() === userId) {
-        const hasProduct = order.items.some(item => item.productId.toString() === productId);
-        if (hasProduct) {
-          isVerified = true;
-        }
-      }
+    if (!orderId) {
+      throw new AppError('Valid purchase required', 403);
     }
+
+    const order = await OrderRepository.findById(orderId);
+    const hasValidOwnership = order && order.userId.toString() === userId;
+    const hasProduct = hasValidOwnership && order.items.some(item => item.productId.toString() === productId);
+
+    if (!hasValidOwnership || !hasProduct) {
+      throw new AppError('Valid purchase required', 403);
+    }
+
+    isVerified = true;
 
     // 4. Create review
     const review = await ReviewRepository.create({
@@ -36,22 +40,24 @@ export const ReviewService = {
       orderId,
       rating: data.rating,
       title: data.title,
-      comment: data.comment,
+      comment: data.comment ?? data.content,
       media: data.media || [],
       isVerified,
-      status: 'pending' // Requires admin approval
+      status: 'pending' // Requires admin approval,
     });
 
     return review;
   },
 
-  async getProductReviews(productId, page = 1, limit = 10) {
+  async getProductReviews(productId, page = 1, limit = 10, filters = {}, sortBy = 'recent') {
     const skip = (page - 1) * limit;
-    const reviews = await ReviewRepository.findByProductIdLean(productId);
+    const sort = sortBy === 'recent' ? { createdAt: -1 } : { createdAt: -1 };
+    const reviews = await ReviewRepository.findApprovedByProductIdFiltered(productId, filters, sort);
     const { averageRating, count } = await ReviewRepository.getAverageRating(productId);
 
     return {
       reviews: reviews.slice(skip, skip + limit),
+      total: reviews.length,
       rating: {
         average: parseFloat(averageRating.toFixed(2)),
         count
@@ -101,7 +107,7 @@ export const ReviewService = {
     const updated = await ReviewRepository.updateById(reviewId, {
       rating: data.rating || review.rating,
       title: data.title || review.title,
-      comment: data.comment || review.comment,
+      comment: data.comment || data.content || review.comment,
       media: data.media || review.media,
       status: 'pending' // Reset to pending if modified
     });
@@ -119,7 +125,15 @@ export const ReviewService = {
       throw new AppError('Cannot delete review', 403);
     }
 
-    return ReviewRepository.softDeleteById(reviewId);
+    return review.deleteOne();
+  },
+
+  async getReviewById(reviewId) {
+    const review = await ReviewRepository.findById(reviewId);
+    if (!review || review.isDeleted) {
+      throw new AppError('Review not found', 404);
+    }
+    return review;
   },
 
   // Admin only
@@ -170,7 +184,7 @@ export const ReviewService = {
     };
   },
 
-  async markHelpful(reviewId, userId) {
+  async markHelpful(reviewId, userId, helpful = true) {
     // Validate inputs
     if (!reviewId || !userId) {
       throw new AppError('Review ID and User ID are required', 400);
@@ -182,13 +196,21 @@ export const ReviewService = {
       throw new AppError('Review not found', 404);
     }
 
-    // Prevent duplicate helpful votes from same user
-    const alreadyMarked = review.helpfulBy && review.helpfulBy.includes(userId);
-    if (alreadyMarked) {
-      throw new AppError('You have already marked this review as helpful', 400);
+    if (review.userId.toString() === userId) {
+      throw new AppError('You cannot vote on your own review', 400);
     }
 
-    // Add user to helpfulBy list and increment count
-    return ReviewRepository.incrementHelpful(reviewId, userId);
+    const alreadyMarkedHelpful = review.helpfulBy && review.helpfulBy.some((id) => id.toString() === userId);
+    const alreadyMarkedNotHelpful = review.notHelpfulBy && review.notHelpfulBy.some((id) => id.toString() === userId);
+    const alreadyMarked = alreadyMarkedHelpful || alreadyMarkedNotHelpful;
+    if (alreadyMarked) {
+      throw new AppError('You have already voted on this review', 400);
+    }
+
+    if (helpful) {
+      return ReviewRepository.incrementHelpful(reviewId, userId);
+    }
+
+    return ReviewRepository.incrementNotHelpful(reviewId, userId);
   }
 };

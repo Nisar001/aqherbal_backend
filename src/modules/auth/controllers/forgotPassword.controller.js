@@ -10,15 +10,23 @@ export const forgotPassword = async (req, res) => {
     const { error } = validateForgotPassword(req.body);
     if (error) return responseHelper.validationError(res, error.details[0].message);
 
-    const user = await UserModel.findOne({ email: req.body.email });
-    if (!user) return responseHelper.notFound(res, 'User not found');
+    const user = await UserModel.findOne({ email: req.body.email, isDeleted: false });
+    if (!user) {
+      return responseHelper.success(res, null, 'Password reset email sent');
+    }
 
-    // Generate reset token and send email
-    const resetToken = user.generateResetToken();
+    const resetToken = Math.random().toString(36).slice(2) + Date.now().toString(36);
+    user.resetToken = resetToken;
+    user.resetPasswordToken = resetToken;
+    user.resetTokenExpires = new Date(Date.now() + 60 * 60 * 1000);
+    user.resetPasswordExpires = user.resetTokenExpires;
     await user.save();
-    await sendEmail(user.email, 'Password Reset', `Your reset token: ${resetToken}`);
-    // ...existing code...
-    return responseHelper.success(res, { message: 'Password reset email sent' });
+    await sendEmail({
+      to: user.email,
+      subject: 'Password Reset',
+      html: `Your reset token: ${resetToken}`
+    });
+    return responseHelper.success(res, null, 'Password reset email sent');
   } catch (err) {
     return responseHelper.error(res, err.message);
   }

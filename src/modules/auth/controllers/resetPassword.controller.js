@@ -10,14 +10,28 @@ export const resetPassword = async (req, res) => {
     const { error } = validateResetPassword(req.body);
     if (error) return responseHelper.validationError(res, error.details[0].message);
 
-    const user = await UserModel.findOne({ resetToken: req.body.token, isDeleted: false });
-    if (!user) return responseHelper.notFound(res, 'Invalid, expired, or deleted token');
+    const user = await UserModel.findOne({
+      $or: [
+        { resetToken: req.body.token },
+        { resetPasswordToken: req.body.token }
+      ],
+      isDeleted: false
+    });
+    if (!user) return responseHelper.validationError(res, 'Invalid, expired, or deleted token');
+
+    const expiry = user.resetPasswordExpires || user.resetTokenExpires;
+    if (expiry && expiry < new Date()) {
+      return responseHelper.validationError(res, 'Invalid, expired, or deleted token');
+    }
 
     user.password = await hashPassword(req.body.password);
     user.resetToken = undefined;
+    user.resetPasswordToken = undefined;
+    user.resetTokenExpires = undefined;
+    user.resetPasswordExpires = undefined;
     await user.save();
     await sendPasswordChangeEmail({ to: user.email, name: user.name, email: user.email });
-    return responseHelper.success(res, { message: 'Password reset successful' });
+    return responseHelper.success(res, null, 'Password reset successful');
   } catch (err) {
     return responseHelper.error(res, err.message);
   }

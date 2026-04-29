@@ -6,7 +6,8 @@ export const validateCreateReview = (data) => {
     orderId: Joi.string().optional(),
     rating: Joi.number().min(1).max(5).required(),
     title: Joi.string().max(200).required(),
-    comment: Joi.string().max(2000).optional(),
+    content: Joi.string().max(5000).optional(),
+    comment: Joi.string().max(5000).optional(),
     media: Joi.array().items(Joi.string().uri()).optional()
   });
   return schema.validate(data);
@@ -16,7 +17,8 @@ export const validateUpdateReview = (data) => {
   const schema = Joi.object({
     rating: Joi.number().min(1).max(5).optional(),
     title: Joi.string().max(200).optional(),
-    comment: Joi.string().max(2000).optional(),
+    content: Joi.string().max(5000).optional(),
+    comment: Joi.string().max(5000).optional(),
     media: Joi.array().items(Joi.string().uri()).optional()
   });
   return schema.validate(data);

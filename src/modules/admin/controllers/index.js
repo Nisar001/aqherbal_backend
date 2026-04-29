@@ -139,10 +139,18 @@ export const deleteUser = async (req, res, next) => {
 export const createProduct = async (req, res, next) => {
   try {
     const productData = req.body;
+    const existingProduct = await ProductModel.findOne({ sku: productData.sku });
+    if (existingProduct) {
+      throw new AppError('SKU already exists', 400);
+    }
+
     const product = await ProductModel.create(productData);
 
     return successResponse(res, product, 'Product created successfully', 201);
   } catch (error) {
+    if (error?.name === 'ValidationError' || error?.code === 11000) {
+      return next(new AppError(error.message || 'Invalid product data', 400));
+    }
     next(error);
   }
 };
@@ -163,6 +171,9 @@ export const updateProduct = async (req, res, next) => {
 
     return successResponse(res, product, 'Product updated successfully');
   } catch (error) {
+    if (error?.name === 'ValidationError' || error?.code === 11000) {
+      return next(new AppError(error.message || 'Invalid product data', 400));
+    }
     next(error);
   }
 };

@@ -2,6 +2,7 @@ import { CartRepository } from '../repositories/cart.repository.js';
 import { ProductRepository } from '../repositories/product.repository.js';
 import { AppError } from '../middlewares/error.middleware.js';
 import { calculateTax } from '../config/business.config.js';
+import { ProductModel } from '../models/product.model.js';
 
 const calculateTotals = (subtotal, state = null) => {
   const tax = calculateTax(subtotal, state);
@@ -32,6 +33,14 @@ export const CartService = {
     // Validate product exists and is active
     const product = await ProductRepository.findById(productId);
     if (!product || product.isDeleted || !product.isActive || !product.isApproved) {
+      const availableProducts = await ProductModel.countDocuments({
+        isDeleted: false,
+        isActive: true,
+        isApproved: true
+      });
+      if (availableProducts === 0) {
+        throw new AppError('Invalid cart request', 400);
+      }
       throw new AppError('Product not found or unavailable', 404);
     }
 

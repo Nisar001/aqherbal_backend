@@ -1,5 +1,6 @@
 import { ReviewModel } from '../models/review.model.js';
 import { BaseRepository } from './base.repository.js';
+import mongoose from 'mongoose';
 
 class ReviewRepositoryImpl extends BaseRepository {
   async findByProductId(productId, filters = {}) {
@@ -13,6 +14,13 @@ class ReviewRepositoryImpl extends BaseRepository {
       .lean()
       .populate('userId', 'name avatar')
       .sort({ createdAt: -1 });
+  }
+
+  async findApprovedByProductIdFiltered(productId, filters = {}, sort = { createdAt: -1 }) {
+    return ReviewModel.find({ productId, status: 'approved', isDeleted: false, ...filters })
+      .lean()
+      .populate('userId', 'name avatar')
+      .sort(sort);
   }
 
   async findApprovedByProductId(productId) {
@@ -40,8 +48,11 @@ class ReviewRepositoryImpl extends BaseRepository {
   }
 
   async getAverageRating(productId) {
+    const normalizedProductId = typeof productId === 'string' && mongoose.Types.ObjectId.isValid(productId)
+      ? new mongoose.Types.ObjectId(productId)
+      : productId;
     const result = await ReviewModel.aggregate([
-      { $match: { productId, status: 'approved', isDeleted: false } },
+      { $match: { productId: normalizedProductId, status: 'approved', isDeleted: false } },
       {
         $group: {
           _id: null,
@@ -74,6 +85,17 @@ class ReviewRepositoryImpl extends BaseRepository {
       {
         $inc: { helpfulCount: 1 },
         $addToSet: { helpfulBy: userId } // Atomic add-to-set prevents duplicates
+      },
+      { new: true }
+    );
+  }
+
+  async incrementNotHelpful(reviewId, userId) {
+    return ReviewModel.findByIdAndUpdate(
+      reviewId,
+      {
+        $inc: { notHelpfulCount: 1 },
+        $addToSet: { notHelpfulBy: userId }
       },
       { new: true }
     );

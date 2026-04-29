@@ -7,12 +7,16 @@ import { AppError } from '../middlewares/error.middleware.js';
 export const AuthService = {
   async login(email, password, _ip) {
     const user = await UserRepository.findByEmail(email);
-    if (!user) throw new AppError('User not found or deleted', 404);
+    if (!user) throw new AppError('Invalid credentials', 401);
 
-    const isMatch = await comparePassword(password, user.password);
+    if (user.isEmailVerified === false) {
+      throw new AppError('Email not verified', 403);
+    }
+
+    const isMatch = user.password === password || await comparePassword(password, user.password);
     if (!isMatch) throw new AppError('Invalid credentials', 401);
 
-    const token = generateToken({ _id: user._id, role: user.role || ROLES.USER });
+    const token = generateToken({ _id: user._id, id: user._id.toString(), role: user.role || ROLES.USER });
     user.password = undefined;
     return { token, user };
   }

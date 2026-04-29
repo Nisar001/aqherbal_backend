@@ -2,8 +2,11 @@ import Joi from 'joi';
 
 // Support both traditional (street/zip) and frontend format (line1/line2/pincode)
 const addressSchema = Joi.object({
+  _id: Joi.any().optional(),
   name: Joi.string().optional(),
   phone: Joi.string().optional(),
+  addressType: Joi.string().optional(),
+  isDefault: Joi.boolean().optional(),
   street: Joi.string().optional(),
   line1: Joi.string().optional(),
   line2: Joi.string().optional().allow(''),
@@ -11,12 +14,25 @@ const addressSchema = Joi.object({
   state: Joi.string().required(),
   zip: Joi.string().optional(),
   pincode: Joi.string().optional(),
+  postalCode: Joi.string().optional(),
   country: Joi.string().default('India')
-}).or('street', 'line1').or('zip', 'pincode');
+}).or('street', 'line1').or('zip', 'pincode', 'postalCode').unknown(true);
 
 export const validateCreateOrder = (data) => {
   const schema = Joi.object({
-    shippingAddress: addressSchema.required(),
+    shippingAddress: addressSchema.optional(),
+    shippingAddressId: Joi.string().optional(),
+    paymentMethod: Joi.string().valid('card', 'netbanking', 'upi').optional(),
+    couponCode: Joi.string().optional()
+  }).or('shippingAddress', 'shippingAddressId');
+  return schema.validate(data);
+};
+
+export const validateCreateOrderRequest = (data) => {
+  const schema = Joi.object({
+    shippingAddress: addressSchema.optional(),
+    shippingAddressId: Joi.string().optional(),
+    paymentMethod: Joi.string().valid('card', 'netbanking', 'upi').optional(),
     couponCode: Joi.string().optional()
   });
   return schema.validate(data);

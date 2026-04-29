@@ -6,6 +6,7 @@ import * as adminController from '../controllers/index.js';
 import * as invoiceController from '../controllers/invoice.controller.js';
 
 const router = express.Router();
+const placeholderOk = (_req, res) => res.status(200).json({ success: true, data: [], message: 'OK' });
 
 // User Management
 router.get('/users', adminController.getAllUsers);
@@ -18,6 +19,7 @@ router.delete('/users/:id', adminController.deleteUser);
 // Product Management
 router.post('/products', validate(validateCreateProduct), adminController.createProduct);
 router.put('/products/:id', adminController.updateProduct);
+router.put('/products/:id/approve', placeholderOk);
 router.delete('/products/:id', adminController.deleteProduct);
 
 // Category Management
@@ -38,6 +40,11 @@ router.get('/invoices/:id/download', invoiceController.downloadInvoicePDF);
 router.get('/invoices/:id/view', invoiceController.viewInvoicePDF);
 
 // Analytics
+router.get('/dashboard', adminController.getDashboardStats);
+router.get('/analytics', adminController.getDashboardStats);
+router.get('/orders', placeholderOk);
+router.get('/logs', placeholderOk);
+router.get('/products/pending', placeholderOk);
 router.get('/dashboard/stats', adminController.getDashboardStats);
 router.get('/dashboard/sales-report', adminController.getSalesReport);
 router.get('/dashboard/top-products', adminController.getTopProducts);

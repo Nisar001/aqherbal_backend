@@ -1,17 +1,44 @@
 import { OrderService } from '../../../services/order.service.js';
-import { validateCreateOrder, validateUpdateOrderStatus, validateCancelOrder } from '../../../validations/order.validation.js';
+import { validateCreateOrderRequest, validateUpdateOrderStatus, validateCancelOrder } from '../../../validations/order.validation.js';
 import { response } from '../../../helpers/response.helper.js';
 import { calculatePagination, buildPaginationMeta } from '../../../helpers/pagination.helper.js';
+import UserModel from '../../../models/user.model.js';
+
+const getRequestUserId = (req) => req.user?.id || req.user?._id || req.user?.userId;
 
 export const createOrder = async (req, res, next) => {
   try {
-    const { error, value } = validateCreateOrder(req.body);
-    if (error) {
-      return response(res, 400, 'Validation error', null, error.details);
+    let requestBody = req.body;
+
+    if (!requestBody.shippingAddress && requestBody.shippingAddressId) {
+      const user = await UserModel.findById(getRequestUserId(req));
+      const selectedAddress = user?.addresses?.find(
+        (address) => address._id?.toString() === requestBody.shippingAddressId
+      );
+
+      if (selectedAddress) {
+        requestBody = {
+          ...requestBody,
+          shippingAddress: selectedAddress.toObject ? selectedAddress.toObject() : selectedAddress
+        };
+      }
     }
 
-    const order = await OrderService.createOrderFromCart(req.user.id, value.shippingAddress, value.couponCode);
-    response(res, 201, 'Order created successfully', order);
+    const { error, value } = validateCreateOrderRequest(requestBody);
+    if (error) {
+      return response(res, 400, error.details[0]?.message || 'Validation error', null, error.details);
+    }
+
+    const order = await OrderService.createOrderFromCart(
+      getRequestUserId(req),
+      value.shippingAddress,
+      value.couponCode,
+      value.paymentMethod
+    );
+    response(res, 201, 'Order created successfully', {
+      ...order.toObject(),
+      orderId: order._id
+    });
   } catch (err) {
     next(err);
   }
@@ -21,9 +48,14 @@ export const getMyOrders = async (req, res, next) => {
   try {
     const { page, limit } = calculatePagination(req.query, 10, 50);
 
-    const result = await OrderService.getUserOrders(req.user.id, page, limit);
+    const result = await OrderService.getUserOrders(getRequestUserId(req), page, limit, { status: req.query.status });
     const pagination = buildPaginationMeta(result.total, page, limit);
-    response(res, 200, 'Orders retrieved successfully', { orders: result.orders, pagination });
+    return res.status(200).json({
+      success: true,
+      data: result.orders,
+      pagination,
+      message: 'Orders retrieved successfully'
+    });
   } catch (err) {
     next(err);
   }
@@ -38,7 +70,7 @@ export const getOrderById = async (req, res, next) => {
     }
 
     // Check ownership (user can only see their own orders; admin can see all)
-    if (order.userId.toString() !== req.user.id && req.user.role !== 'admin') {
+    if (order.userId.toString() !== getRequestUserId(req) && req.user.role !== 'admin') {
       return response(res, 403, 'Forbidden', null);
     }
 
@@ -55,7 +87,7 @@ export const cancelOrder = async (req, res, next) => {
       return response(res, 400, 'Validation error', null, error.details);
     }
 
-    const order = await OrderService.cancelOrder(req.params.id, req.user.id, value.reason);
+    const order = await OrderService.cancelOrder(req.params.id, getRequestUserId(req), value.reason);
     response(res, 200, 'Order cancelled successfully', order);
   } catch (err) {
     next(err);

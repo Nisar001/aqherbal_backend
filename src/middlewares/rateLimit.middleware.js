@@ -1,6 +1,8 @@
 import rateLimit from 'express-rate-limit';
 import { config } from '../config/config.js';
 
+const bypassInTest = (_req, _res) => process.env.NODE_ENV === 'test';
+
 function parseWindowMs(str) {
   if (!str) return 15 * 60 * 1000;
   if (str.endsWith('m')) return parseInt(str) * 60 * 1000;
@@ -11,6 +13,7 @@ function parseWindowMs(str) {
 export const suspiciousRateLimiter = rateLimit({
   windowMs: parseWindowMs(config.rateLimitWindow),
   max: Number(config.suspiciousRateLimitMax),
+  skip: bypassInTest,
   keyGenerator: (req) => req.userIp || req.headers['x-forwarded-for'] || req.connection.remoteAddress,
   handler: (req, res) => {
     return res.status(429).json({
@@ -23,6 +26,7 @@ export const suspiciousRateLimiter = rateLimit({
 export const normalRateLimiter = rateLimit({
   windowMs: parseWindowMs(config.rateLimitWindow),
   max: Number(config.rateLimitMax),
+  skip: bypassInTest,
   keyGenerator: (req) => req.userIp || req.headers['x-forwarded-for'] || req.connection.remoteAddress,
   handler: (req, res) => {
     return res.status(429).json({
@@ -35,6 +39,7 @@ export const normalRateLimiter = rateLimit({
 const buildRateLimiter = ({ windowMs, max, message }) => rateLimit({
   windowMs,
   max,
+  skip: bypassInTest,
   keyGenerator: (req) => req.userIp || req.headers['x-forwarded-for'] || req.connection.remoteAddress,
   handler: (req, res) => res.status(429).json({ success: false, message })
 });

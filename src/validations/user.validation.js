@@ -2,7 +2,9 @@
 export function validateResetPassword(data) {
   const schema = Joi.object({
     token: Joi.string().required(),
-    password: Joi.string().min(6).required()
+    password: Joi.string().min(6).required(),
+    confirmPassword: Joi.string().valid(Joi.ref('password')).optional()
+      .messages({ 'any.only': 'Passwords must match' })
   });
   return schema.validate(data);
 }
@@ -40,6 +42,7 @@ import Joi from 'joi';
 export function validateRegister(data) {
   const schema = Joi.object({
     name: Joi.string().min(2).required(),
+    lastName: Joi.string().optional(),
     email: Joi.string().email().required(),
     password: Joi.string().min(6).required(),
     phone: Joi.string().optional(),

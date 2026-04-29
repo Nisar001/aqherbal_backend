@@ -1,0 +1,2508 @@
+{
+  "summary": {
+    "generatedAt": "2026-04-21T05:41:44.907Z",
+    "jest": {
+      "totalSuites": 10,
+      "passedSuites": 6,
+      "failedSuites": 4,
+      "totalTests": 207,
+      "passedTests": 168,
+      "failedTests": 39,
+      "pendingTests": 0,
+      "runtimeMs": 74814,
+      "success": false
+    },
+    "endpoints": {
+      "implemented": 109,
+      "passing": 7,
+      "partial": 0,
+      "failing": 0,
+      "untested": 102,
+      "missingRouteTargets": 37
+    }
+  },
+  "endpointResults": [
+    {
+      "key": "DELETE /",
+      "method": "DELETE",
+      "path": "/",
+      "implemented": true,
+      "modules": [
+        "cart"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "DELETE /:id",
+      "method": "DELETE",
+      "path": "/:id",
+      "implemented": true,
+      "modules": [
+        "coupons",
+        "notifications",
+        "reviews",
+        "user"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "DELETE /:id/cancel",
+      "method": "DELETE",
+      "path": "/:id/cancel",
+      "implemented": true,
+      "modules": [
+        "orders"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "DELETE /api/v1/auth/user/:id",
+      "method": "DELETE",
+      "path": "/api/v1/auth/user/:id",
+      "implemented": true,
+      "modules": [
+        "auth"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "DELETE /api/v1/cart/clear",
+      "method": "DELETE",
+      "path": "/api/v1/cart/clear",
+      "implemented": false,
+      "modules": [],
+      "testFiles": [
+        "tests\\cart.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 1,
+        "passed": 0,
+        "failed": 1,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\cart.test.js"
+        ],
+        "failures": [
+          {
+            "title": "✓ Should clear entire cart",
+            "message": "TypeError: Cannot read properties of undefined (reading 'length')\n    at Object.<anonymous> (E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\tests\\cart.test.js:310:34)\n    at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+          }
+        ]
+      },
+      "status": "test-target-missing-route"
+    },
+    {
+      "key": "DELETE /api/v1/cart/remove/:productId",
+      "method": "DELETE",
+      "path": "/api/v1/cart/remove/:productId",
+      "implemented": false,
+      "modules": [],
+      "testFiles": [
+        "tests\\cart.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 2,
+        "passed": 0,
+        "failed": 2,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\cart.test.js"
+        ],
+        "failures": [
+          {
+            "title": "✓ Should remove product from cart",
+            "message": "TypeError: Cannot read properties of undefined (reading 'length')\n    at Object.<anonymous> (E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\tests\\cart.test.js:274:34)\n    at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+          },
+          {
+            "title": "✗ Should fail with non-existent item",
+            "message": "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: 404\nReceived: 200\n    at Object.<anonymous> (E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\tests\\cart.test.js:284:26)\n    at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+          }
+        ]
+      },
+      "status": "test-target-missing-route"
+    },
+    {
+      "key": "DELETE /api/v1/coupons/:id",
+      "method": "DELETE",
+      "path": "/api/v1/coupons/:id",
+      "implemented": false,
+      "modules": [],
+      "testFiles": [
+        "tests\\coupons.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 2,
+        "passed": 0,
+        "failed": 2,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\coupons.test.js"
+        ],
+        "failures": [
+          {
+            "title": "✓ Should delete coupon",
+            "message": "ValidationError: Coupon validation failed: validUntil: Path `validUntil` is required., description: Path `description` is required.\n    at model.Document.invalidate (E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\document.js:3354:32)\n    at E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\document.js:3115:17\n    at E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\schemaType.js:1410:9\n    at processTicksAndRejections (node:internal/process/task_queues:85:11)"
+          },
+          {
+            "title": "✗ Should not allow users to delete",
+            "message": "ValidationError: Coupon validation failed: validUntil: Path `validUntil` is required., description: Path `description` is required.\n    at model.Document.invalidate (E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\document.js:3354:32)\n    at E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\document.js:3115:17\n    at E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\schemaType.js:1410:9\n    at processTicksAndRejections (node:internal/process/task_queues:85:11)"
+          }
+        ]
+      },
+      "status": "test-target-missing-route"
+    },
+    {
+      "key": "DELETE /api/v1/reviews/:id",
+      "method": "DELETE",
+      "path": "/api/v1/reviews/:id",
+      "implemented": false,
+      "modules": [],
+      "testFiles": [
+        "tests\\reviews.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 2,
+        "passed": 2,
+        "failed": 0,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\reviews.test.js"
+        ],
+        "failures": []
+      },
+      "status": "test-target-missing-route"
+    },
+    {
+      "key": "DELETE /categories/:id",
+      "method": "DELETE",
+      "path": "/categories/:id",
+      "implemented": true,
+      "modules": [
+        "admin"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "DELETE /clear",
+      "method": "DELETE",
+      "path": "/clear",
+      "implemented": true,
+      "modules": [
+        "cart"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "DELETE /delete/:id",
+      "method": "DELETE",
+      "path": "/delete/:id",
+      "implemented": true,
+      "modules": [
+        "user"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "DELETE /invoices/:id",
+      "method": "DELETE",
+      "path": "/invoices/:id",
+      "implemented": true,
+      "modules": [
+        "admin"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "DELETE /items/:productId",
+      "method": "DELETE",
+      "path": "/items/:productId",
+      "implemented": true,
+      "modules": [
+        "cart"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "DELETE /products/:id",
+      "method": "DELETE",
+      "path": "/products/:id",
+      "implemented": true,
+      "modules": [
+        "admin"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "DELETE /remove/:productId",
+      "method": "DELETE",
+      "path": "/remove/:productId",
+      "implemented": true,
+      "modules": [
+        "cart"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "DELETE /users/:id",
+      "method": "DELETE",
+      "path": "/users/:id",
+      "implemented": true,
+      "modules": [
+        "admin"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /",
+      "method": "GET",
+      "path": "/",
+      "implemented": true,
+      "modules": [
+        "cart",
+        "categories",
+        "coupons",
+        "notifications",
+        "orders",
+        "products",
+        "user"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /:id",
+      "method": "GET",
+      "path": "/:id",
+      "implemented": true,
+      "modules": [
+        "categories",
+        "coupons",
+        "orders",
+        "products",
+        "reviews",
+        "user"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /:id/stats",
+      "method": "GET",
+      "path": "/:id/stats",
+      "implemented": true,
+      "modules": [
+        "coupons"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /:productId/reviews",
+      "method": "GET",
+      "path": "/:productId/reviews",
+      "implemented": true,
+      "modules": [
+        "products"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /admin/pending",
+      "method": "GET",
+      "path": "/admin/pending",
+      "implemented": true,
+      "modules": [
+        "reviews"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /admin/recent",
+      "method": "GET",
+      "path": "/admin/recent",
+      "implemented": true,
+      "modules": [
+        "orders"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /admin/shipments",
+      "method": "GET",
+      "path": "/admin/shipments",
+      "implemented": true,
+      "modules": [
+        "shipments"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /admin/shipments/:id",
+      "method": "GET",
+      "path": "/admin/shipments/:id",
+      "implemented": true,
+      "modules": [
+        "shipments"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /analytics",
+      "method": "GET",
+      "path": "/analytics",
+      "implemented": true,
+      "modules": [
+        "admin"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /api/v1/admin/analytics",
+      "method": "GET",
+      "path": "/api/v1/admin/analytics",
+      "implemented": false,
+      "modules": [],
+      "testFiles": [
+        "tests\\admin.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 2,
+        "passed": 1,
+        "failed": 1,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\admin.test.js"
+        ],
+        "failures": [
+          {
+            "title": "✓ Should return sales analytics",
+            "message": "Error: expect(received).toHaveProperty(path)\n\nExpected path: \"salesByMonth\"\nReceived path: []\n\nReceived value: {\"lowStockProducts\": 0, \"pendingOrders\": 0, \"totalOrders\": 0, \"totalProducts\": 0, \"totalRevenue\": 0, \"totalUsers\": 1}\n    at Object.<anonymous> (E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\tests\\admin.test.js:395:29)\n    at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+          }
+        ]
+      },
+      "status": "test-target-missing-route"
+    },
+    {
+      "key": "GET /api/v1/admin/dashboard",
+      "method": "GET",
+      "path": "/api/v1/admin/dashboard",
+      "implemented": false,
+      "modules": [],
+      "testFiles": [
+        "tests\\admin.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 5,
+        "passed": 3,
+        "failed": 2,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\admin.test.js"
+        ],
+        "failures": [
+          {
+            "title": "✓ Should have sales breakdown",
+            "message": "Error: expect(received).toHaveProperty(path)\n\nMatcher error: received value must not be null nor undefined\n\nReceived has value: undefined\n    at Object.<anonymous> (E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\tests\\admin.test.js:117:35)\n    at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+          },
+          {
+            "title": "✓ Should count pending products",
+            "message": "Error: expect(received).toHaveProperty(path)\n\nExpected path: \"pendingProducts\"\nReceived path: []\n\nReceived value: {\"lowStockProducts\": 1, \"pendingOrders\": 1, \"totalOrders\": 2, \"totalProducts\": 2, \"totalRevenue\": 100, \"totalUsers\": 3}\n    at Object.<anonymous> (E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\tests\\admin.test.js:127:29)\n    at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+          }
+        ]
+      },
+      "status": "test-target-missing-route"
+    },
+    {
+      "key": "GET /api/v1/admin/logs",
+      "method": "GET",
+      "path": "/api/v1/admin/logs",
+      "implemented": false,
+      "modules": [],
+      "testFiles": [
+        "tests\\admin.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 2,
+        "passed": 2,
+        "failed": 0,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\admin.test.js"
+        ],
+        "failures": []
+      },
+      "status": "test-target-missing-route"
+    },
+    {
+      "key": "GET /api/v1/admin/orders",
+      "method": "GET",
+      "path": "/api/v1/admin/orders",
+      "implemented": false,
+      "modules": [],
+      "testFiles": [
+        "tests\\admin.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 2,
+        "passed": 2,
+        "failed": 0,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\admin.test.js"
+        ],
+        "failures": []
+      },
+      "status": "test-target-missing-route"
+    },
+    {
+      "key": "GET /api/v1/admin/products/pending",
+      "method": "GET",
+      "path": "/api/v1/admin/products/pending",
+      "implemented": false,
+      "modules": [],
+      "testFiles": [
+        "tests\\admin.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 1,
+        "passed": 1,
+        "failed": 0,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\admin.test.js"
+        ],
+        "failures": []
+      },
+      "status": "test-target-missing-route"
+    },
+    {
+      "key": "GET /api/v1/admin/users",
+      "method": "GET",
+      "path": "/api/v1/admin/users",
+      "implemented": false,
+      "modules": [],
+      "testFiles": [
+        "tests\\admin.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 4,
+        "passed": 4,
+        "failed": 0,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\admin.test.js"
+        ],
+        "failures": []
+      },
+      "status": "test-target-missing-route"
+    },
+    {
+      "key": "GET /api/v1/admin/users/:id",
+      "method": "GET",
+      "path": "/api/v1/admin/users/:id",
+      "implemented": false,
+      "modules": [],
+      "testFiles": [
+        "tests\\admin.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 1,
+        "passed": 0,
+        "failed": 1,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\admin.test.js"
+        ],
+        "failures": [
+          {
+            "title": "✓ Should get user details with order history",
+            "message": "Error: expect(received).toHaveProperty(path)\n\nExpected path: \"orders\"\nReceived path: []\n\nReceived value: {\"__v\": 0, \"_id\": \"69e70ddb3338cee840d5ef13\", \"addresses\": [], \"createdAt\": \"2026-04-21T05:40:43.366Z\", \"email\": \"details@test.com\", \"isActive\": true, \"isDeleted\": false, \"isEmailVerified\": false, \"name\": \"Details\", \"refreshTokens\": [], \"role\": \"user\", \"updatedAt\": \"2026-04-21T05:40:43.366Z\"}\n    at Object.<anonymous> (E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\tests\\admin.test.js:236:29)\n    at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+          }
+        ]
+      },
+      "status": "test-target-missing-route"
+    },
+    {
+      "key": "GET /api/v1/auth/profile",
+      "method": "GET",
+      "path": "/api/v1/auth/profile",
+      "implemented": true,
+      "modules": [
+        "auth"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /api/v1/auth/user/:id",
+      "method": "GET",
+      "path": "/api/v1/auth/user/:id",
+      "implemented": true,
+      "modules": [
+        "auth"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /api/v1/auth/users",
+      "method": "GET",
+      "path": "/api/v1/auth/users",
+      "implemented": true,
+      "modules": [
+        "auth"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /api/v1/auth/verify-email",
+      "method": "GET",
+      "path": "/api/v1/auth/verify-email",
+      "implemented": true,
+      "modules": [
+        "auth"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /api/v1/auth/verify-email/:token",
+      "method": "GET",
+      "path": "/api/v1/auth/verify-email/:token",
+      "implemented": true,
+      "modules": [
+        "auth"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /api/v1/cart",
+      "method": "GET",
+      "path": "/api/v1/cart",
+      "implemented": false,
+      "modules": [],
+      "testFiles": [
+        "tests\\cart.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 3,
+        "passed": 2,
+        "failed": 1,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\cart.test.js"
+        ],
+        "failures": [
+          {
+            "title": "✓ Should get cart with items",
+            "message": "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: 598\nReceived: 657.8\n    at Object.<anonymous> (E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\tests\\cart.test.js:83:40)\n    at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+          }
+        ]
+      },
+      "status": "test-target-missing-route"
+    },
+    {
+      "key": "GET /api/v1/cart/admin/failed",
+      "method": "GET",
+      "path": "/api/v1/cart/admin/failed",
+      "implemented": true,
+      "modules": [
+        "payment"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /api/v1/cart/history",
+      "method": "GET",
+      "path": "/api/v1/cart/history",
+      "implemented": true,
+      "modules": [
+        "payment"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /api/v1/categories",
+      "method": "GET",
+      "path": "/api/v1/categories",
+      "implemented": false,
+      "modules": [],
+      "testFiles": [
+        "tests\\products.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 2,
+        "passed": 2,
+        "failed": 0,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\products.test.js"
+        ],
+        "failures": []
+      },
+      "status": "test-target-missing-route"
+    },
+    {
+      "key": "GET /api/v1/coupons",
+      "method": "GET",
+      "path": "/api/v1/coupons",
+      "implemented": false,
+      "modules": [],
+      "testFiles": [
+        "tests\\coupons.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 2,
+        "passed": 0,
+        "failed": 2,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\coupons.test.js"
+        ],
+        "failures": [
+          {
+            "title": "✓ Should list active coupons for users",
+            "message": "ValidationError: Coupon validation failed: validUntil: Path `validUntil` is required., description: Path `description` is required.\n    at model.Document.invalidate (E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\document.js:3354:32)\n    at E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\document.js:3115:17\n    at E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\schemaType.js:1410:9\n    at processTicksAndRejections (node:internal/process/task_queues:85:11)"
+          },
+          {
+            "title": "✓ Should list all coupons for admin",
+            "message": "ValidationError: Coupon validation failed: validUntil: Path `validUntil` is required., description: Path `description` is required.\n    at model.Document.invalidate (E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\document.js:3354:32)\n    at E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\document.js:3115:17\n    at E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\schemaType.js:1410:9\n    at processTicksAndRejections (node:internal/process/task_queues:85:11)"
+          }
+        ]
+      },
+      "status": "test-target-missing-route"
+    },
+    {
+      "key": "GET /api/v1/orders",
+      "method": "GET",
+      "path": "/api/v1/orders",
+      "implemented": false,
+      "modules": [],
+      "testFiles": [
+        "tests\\orders.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 3,
+        "passed": 3,
+        "failed": 0,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\orders.test.js"
+        ],
+        "failures": []
+      },
+      "status": "test-target-missing-route"
+    },
+    {
+      "key": "GET /api/v1/orders/:id",
+      "method": "GET",
+      "path": "/api/v1/orders/:id",
+      "implemented": false,
+      "modules": [],
+      "testFiles": [
+        "tests\\orders.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 3,
+        "passed": 3,
+        "failed": 0,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\orders.test.js"
+        ],
+        "failures": []
+      },
+      "status": "test-target-missing-route"
+    },
+    {
+      "key": "GET /api/v1/products",
+      "method": "GET",
+      "path": "/api/v1/products",
+      "implemented": false,
+      "modules": [],
+      "testFiles": [
+        "tests\\products.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 9,
+        "passed": 9,
+        "failed": 0,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\products.test.js"
+        ],
+        "failures": []
+      },
+      "status": "test-target-missing-route"
+    },
+    {
+      "key": "GET /api/v1/products/:id",
+      "method": "GET",
+      "path": "/api/v1/products/:id",
+      "implemented": false,
+      "modules": [],
+      "testFiles": [
+        "tests\\products.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 4,
+        "passed": 4,
+        "failed": 0,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\products.test.js"
+        ],
+        "failures": []
+      },
+      "status": "test-target-missing-route"
+    },
+    {
+      "key": "GET /api/v1/products/:id/reviews",
+      "method": "GET",
+      "path": "/api/v1/products/:id/reviews",
+      "implemented": false,
+      "modules": [],
+      "testFiles": [
+        "tests\\reviews.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 5,
+        "passed": 5,
+        "failed": 0,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\reviews.test.js"
+        ],
+        "failures": []
+      },
+      "status": "test-target-missing-route"
+    },
+    {
+      "key": "GET /api/v1/reviews/:id",
+      "method": "GET",
+      "path": "/api/v1/reviews/:id",
+      "implemented": false,
+      "modules": [],
+      "testFiles": [
+        "tests\\reviews.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 2,
+        "passed": 2,
+        "failed": 0,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\reviews.test.js"
+        ],
+        "failures": []
+      },
+      "status": "test-target-missing-route"
+    },
+    {
+      "key": "GET /dashboard",
+      "method": "GET",
+      "path": "/dashboard",
+      "implemented": true,
+      "modules": [
+        "admin"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /dashboard/revenue",
+      "method": "GET",
+      "path": "/dashboard/revenue",
+      "implemented": true,
+      "modules": [
+        "admin"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /dashboard/sales-report",
+      "method": "GET",
+      "path": "/dashboard/sales-report",
+      "implemented": true,
+      "modules": [
+        "admin"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /dashboard/stats",
+      "method": "GET",
+      "path": "/dashboard/stats",
+      "implemented": true,
+      "modules": [
+        "admin"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /dashboard/top-products",
+      "method": "GET",
+      "path": "/dashboard/top-products",
+      "implemented": true,
+      "modules": [
+        "admin"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /history/:productId",
+      "method": "GET",
+      "path": "/history/:productId",
+      "implemented": true,
+      "modules": [
+        "inventory"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /invoices",
+      "method": "GET",
+      "path": "/invoices",
+      "implemented": true,
+      "modules": [
+        "admin"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /invoices/:id",
+      "method": "GET",
+      "path": "/invoices/:id",
+      "implemented": true,
+      "modules": [
+        "admin"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /invoices/:id/download",
+      "method": "GET",
+      "path": "/invoices/:id/download",
+      "implemented": true,
+      "modules": [
+        "admin"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /invoices/:id/view",
+      "method": "GET",
+      "path": "/invoices/:id/view",
+      "implemented": true,
+      "modules": [
+        "admin"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /invoices/orders/:orderId",
+      "method": "GET",
+      "path": "/invoices/orders/:orderId",
+      "implemented": true,
+      "modules": [
+        "admin"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /logs",
+      "method": "GET",
+      "path": "/logs",
+      "implemented": true,
+      "modules": [
+        "admin"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /low-stock",
+      "method": "GET",
+      "path": "/low-stock",
+      "implemented": true,
+      "modules": [
+        "inventory"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /my-orders",
+      "method": "GET",
+      "path": "/my-orders",
+      "implemented": true,
+      "modules": [
+        "orders"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /my-reviews",
+      "method": "GET",
+      "path": "/my-reviews",
+      "implemented": true,
+      "modules": [
+        "reviews"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /orders",
+      "method": "GET",
+      "path": "/orders",
+      "implemented": true,
+      "modules": [
+        "admin"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /orders/:orderId/tracking",
+      "method": "GET",
+      "path": "/orders/:orderId/tracking",
+      "implemented": true,
+      "modules": [
+        "shipments"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /product/:productId",
+      "method": "GET",
+      "path": "/product/:productId",
+      "implemented": true,
+      "modules": [
+        "reviews"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /products/pending",
+      "method": "GET",
+      "path": "/products/pending",
+      "implemented": true,
+      "modules": [
+        "admin"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /profile/:id",
+      "method": "GET",
+      "path": "/profile/:id",
+      "implemented": true,
+      "modules": [
+        "user"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /status/:status",
+      "method": "GET",
+      "path": "/status/:status",
+      "implemented": true,
+      "modules": [
+        "orders"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /summary",
+      "method": "GET",
+      "path": "/summary",
+      "implemented": true,
+      "modules": [
+        "inventory"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /summary/:productId",
+      "method": "GET",
+      "path": "/summary/:productId",
+      "implemented": true,
+      "modules": [
+        "reviews"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /track/:trackingNumber",
+      "method": "GET",
+      "path": "/track/:trackingNumber",
+      "implemented": true,
+      "modules": [
+        "shipments"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /unread-count",
+      "method": "GET",
+      "path": "/unread-count",
+      "implemented": true,
+      "modules": [
+        "notifications"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /users",
+      "method": "GET",
+      "path": "/users",
+      "implemented": true,
+      "modules": [
+        "admin"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /users/:id",
+      "method": "GET",
+      "path": "/users/:id",
+      "implemented": true,
+      "modules": [
+        "admin"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "GET /view/:id",
+      "method": "GET",
+      "path": "/view/:id",
+      "implemented": true,
+      "modules": [
+        "categories",
+        "orders",
+        "products",
+        "user"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "POST /",
+      "method": "POST",
+      "path": "/",
+      "implemented": true,
+      "modules": [
+        "coupons",
+        "orders",
+        "products",
+        "reviews"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "POST /:id/helpful",
+      "method": "POST",
+      "path": "/:id/helpful",
+      "implemented": true,
+      "modules": [
+        "reviews"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "POST /add",
+      "method": "POST",
+      "path": "/add",
+      "implemented": true,
+      "modules": [
+        "cart"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "POST /adjust-stock",
+      "method": "POST",
+      "path": "/adjust-stock",
+      "implemented": true,
+      "modules": [
+        "inventory"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "POST /admin/orders/:orderId/assign-shipment",
+      "method": "POST",
+      "path": "/admin/orders/:orderId/assign-shipment",
+      "implemented": true,
+      "modules": [
+        "shipments"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "POST /admin/shipments/:id/cancel",
+      "method": "POST",
+      "path": "/admin/shipments/:id/cancel",
+      "implemented": true,
+      "modules": [
+        "shipments"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "POST /admin/shipments/:id/refresh",
+      "method": "POST",
+      "path": "/admin/shipments/:id/refresh",
+      "implemented": true,
+      "modules": [
+        "shipments"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "POST /admin/shipments/bulk-refresh",
+      "method": "POST",
+      "path": "/admin/shipments/bulk-refresh",
+      "implemented": true,
+      "modules": [
+        "shipments"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "POST /api/v1/auth/change-password",
+      "method": "POST",
+      "path": "/api/v1/auth/change-password",
+      "implemented": true,
+      "modules": [
+        "auth"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "POST /api/v1/auth/forgot-password",
+      "method": "POST",
+      "path": "/api/v1/auth/forgot-password",
+      "implemented": true,
+      "modules": [
+        "auth"
+      ],
+      "testFiles": [
+        "tests\\auth.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 2,
+        "passed": 2,
+        "failed": 0,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\auth.test.js"
+        ],
+        "failures": []
+      },
+      "status": "passing"
+    },
+    {
+      "key": "POST /api/v1/auth/login",
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "implemented": true,
+      "modules": [
+        "auth"
+      ],
+      "testFiles": [
+        "tests\\auth.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 5,
+        "passed": 5,
+        "failed": 0,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\auth.test.js"
+        ],
+        "failures": []
+      },
+      "status": "passing"
+    },
+    {
+      "key": "POST /api/v1/auth/logout",
+      "method": "POST",
+      "path": "/api/v1/auth/logout",
+      "implemented": true,
+      "modules": [
+        "auth"
+      ],
+      "testFiles": [
+        "tests\\auth.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 2,
+        "passed": 2,
+        "failed": 0,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\auth.test.js"
+        ],
+        "failures": []
+      },
+      "status": "passing"
+    },
+    {
+      "key": "POST /api/v1/auth/refresh-token",
+      "method": "POST",
+      "path": "/api/v1/auth/refresh-token",
+      "implemented": true,
+      "modules": [
+        "auth"
+      ],
+      "testFiles": [
+        "tests\\auth.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 3,
+        "passed": 3,
+        "failed": 0,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\auth.test.js"
+        ],
+        "failures": []
+      },
+      "status": "passing"
+    },
+    {
+      "key": "POST /api/v1/auth/register",
+      "method": "POST",
+      "path": "/api/v1/auth/register",
+      "implemented": true,
+      "modules": [
+        "auth"
+      ],
+      "testFiles": [
+        "tests\\auth.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 6,
+        "passed": 6,
+        "failed": 0,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\auth.test.js"
+        ],
+        "failures": []
+      },
+      "status": "passing"
+    },
+    {
+      "key": "POST /api/v1/auth/resend-verification-email",
+      "method": "POST",
+      "path": "/api/v1/auth/resend-verification-email",
+      "implemented": true,
+      "modules": [
+        "auth"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "POST /api/v1/auth/reset-password",
+      "method": "POST",
+      "path": "/api/v1/auth/reset-password",
+      "implemented": true,
+      "modules": [
+        "auth"
+      ],
+      "testFiles": [
+        "tests\\auth.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 3,
+        "passed": 3,
+        "failed": 0,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\auth.test.js"
+        ],
+        "failures": []
+      },
+      "status": "passing"
+    },
+    {
+      "key": "POST /api/v1/auth/send-verification-email",
+      "method": "POST",
+      "path": "/api/v1/auth/send-verification-email",
+      "implemented": true,
+      "modules": [
+        "auth"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "POST /api/v1/auth/verify-email",
+      "method": "POST",
+      "path": "/api/v1/auth/verify-email",
+      "implemented": true,
+      "modules": [
+        "auth"
+      ],
+      "testFiles": [
+        "tests\\auth.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 2,
+        "passed": 2,
+        "failed": 0,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\auth.test.js"
+        ],
+        "failures": []
+      },
+      "status": "passing"
+    },
+    {
+      "key": "POST /api/v1/cart/add",
+      "method": "POST",
+      "path": "/api/v1/cart/add",
+      "implemented": false,
+      "modules": [],
+      "testFiles": [
+        "tests\\cart.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 6,
+        "passed": 2,
+        "failed": 4,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\cart.test.js"
+        ],
+        "failures": [
+          {
+            "title": "✓ Should add product to cart",
+            "message": "TypeError: Cannot read properties of undefined (reading 'length')\n    at Object.<anonymous> (E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\tests\\cart.test.js:107:34)\n    at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+          },
+          {
+            "title": "✓ Should increase quantity for duplicate product",
+            "message": "TypeError: Cannot read properties of undefined (reading 'length')\n    at Object.<anonymous> (E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\tests\\cart.test.js:132:34)\n    at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+          },
+          {
+            "title": "✗ Should fail with out-of-stock quantity",
+            "message": "Error: expect(received).toContain(expected) // indexOf\n\nExpected substring: \"stock\"\nReceived string:    \"\\\"quantity\\\" must be less than or equal to 999\"\n    at Object.<anonymous> (E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\tests\\cart.test.js:158:32)\n    at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+          },
+          {
+            "title": "✗ Should fail with inactive product",
+            "message": "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: 400\nReceived: 404\n    at Object.<anonymous> (E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\tests\\cart.test.js:194:26)\n    at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+          }
+        ]
+      },
+      "status": "test-target-missing-route"
+    },
+    {
+      "key": "POST /api/v1/cart/apply-coupon",
+      "method": "POST",
+      "path": "/api/v1/cart/apply-coupon",
+      "implemented": false,
+      "modules": [],
+      "testFiles": [
+        "tests\\coupons.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 2,
+        "passed": 0,
+        "failed": 2,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\coupons.test.js"
+        ],
+        "failures": [
+          {
+            "title": "✓ Should apply coupon to cart",
+            "message": "ValidationError: Coupon validation failed: validUntil: Path `validUntil` is required., description: Path `description` is required.\n    at model.Document.invalidate (E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\document.js:3354:32)\n    at E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\document.js:3115:17\n    at E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\schemaType.js:1410:9\n    at processTicksAndRejections (node:internal/process/task_queues:85:11)"
+          },
+          {
+            "title": "✗ Should fail with empty cart",
+            "message": "ValidationError: Coupon validation failed: validUntil: Path `validUntil` is required., description: Path `description` is required.\n    at model.Document.invalidate (E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\document.js:3354:32)\n    at E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\document.js:3115:17\n    at E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\schemaType.js:1410:9\n    at processTicksAndRejections (node:internal/process/task_queues:85:11)"
+          }
+        ]
+      },
+      "status": "test-target-missing-route"
+    },
+    {
+      "key": "POST /api/v1/cart/initiate",
+      "method": "POST",
+      "path": "/api/v1/cart/initiate",
+      "implemented": true,
+      "modules": [
+        "payment"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "POST /api/v1/cart/retry/:id",
+      "method": "POST",
+      "path": "/api/v1/cart/retry/:id",
+      "implemented": true,
+      "modules": [
+        "payment"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "POST /api/v1/cart/verify",
+      "method": "POST",
+      "path": "/api/v1/cart/verify",
+      "implemented": true,
+      "modules": [
+        "payment"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "POST /api/v1/cart/webhook/razorpay",
+      "method": "POST",
+      "path": "/api/v1/cart/webhook/razorpay",
+      "implemented": true,
+      "modules": [
+        "payment"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "POST /api/v1/cart/webhook/stripe",
+      "method": "POST",
+      "path": "/api/v1/cart/webhook/stripe",
+      "implemented": true,
+      "modules": [
+        "payment"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "POST /api/v1/coupons",
+      "method": "POST",
+      "path": "/api/v1/coupons",
+      "implemented": false,
+      "modules": [],
+      "testFiles": [
+        "tests\\coupons.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 6,
+        "passed": 3,
+        "failed": 3,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\coupons.test.js"
+        ],
+        "failures": [
+          {
+            "title": "✓ Should create percentage coupon",
+            "message": "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: 201\nReceived: 400\n    at Object.<anonymous> (E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\tests\\coupons.test.js:82:26)\n    at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+          },
+          {
+            "title": "✓ Should create fixed coupon",
+            "message": "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: 201\nReceived: 400\n    at Object.<anonymous> (E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\tests\\coupons.test.js:102:26)\n    at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+          },
+          {
+            "title": "✗ Should fail with duplicate code",
+            "message": "ValidationError: Coupon validation failed: validUntil: Path `validUntil` is required., description: Path `description` is required.\n    at model.Document.invalidate (E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\document.js:3354:32)\n    at E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\document.js:3115:17\n    at E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\schemaType.js:1410:9\n    at processTicksAndRejections (node:internal/process/task_queues:85:11)"
+          }
+        ]
+      },
+      "status": "test-target-missing-route"
+    },
+    {
+      "key": "POST /api/v1/coupons/validate",
+      "method": "POST",
+      "path": "/api/v1/coupons/validate",
+      "implemented": false,
+      "modules": [],
+      "testFiles": [
+        "tests\\coupons.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 8,
+        "passed": 0,
+        "failed": 8,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\coupons.test.js"
+        ],
+        "failures": [
+          {
+            "title": "✓ Should validate valid coupon",
+            "message": "ValidationError: Coupon validation failed: validUntil: Path `validUntil` is required., description: Path `description` is required.\n    at model.Document.invalidate (E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\document.js:3354:32)\n    at E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\document.js:3115:17\n    at E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\schemaType.js:1410:9\n    at processTicksAndRejections (node:internal/process/task_queues:85:11)"
+          },
+          {
+            "title": "✗ Should reject invalid coupon code",
+            "message": "ValidationError: Coupon validation failed: validUntil: Path `validUntil` is required., description: Path `description` is required.\n    at model.Document.invalidate (E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\document.js:3354:32)\n    at E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\document.js:3115:17\n    at E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\schemaType.js:1410:9\n    at processTicksAndRejections (node:internal/process/task_queues:85:11)"
+          },
+          {
+            "title": "✗ Should reject expired coupon",
+            "message": "ValidationError: Coupon validation failed: validUntil: Path `validUntil` is required., description: Path `description` is required.\n    at model.Document.invalidate (E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\document.js:3354:32)\n    at E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\document.js:3115:17\n    at E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\schemaType.js:1410:9\n    at processTicksAndRejections (node:internal/process/task_queues:85:11)"
+          },
+          {
+            "title": "✗ Should reject if min order value not met",
+            "message": "ValidationError: Coupon validation failed: validUntil: Path `validUntil` is required., description: Path `description` is required.\n    at model.Document.invalidate (E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\document.js:3354:32)\n    at E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\document.js:3115:17\n    at E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\schemaType.js:1410:9\n    at processTicksAndRejections (node:internal/process/task_queues:85:11)"
+          },
+          {
+            "title": "✗ Should reject if max uses reached",
+            "message": "ValidationError: Coupon validation failed: validUntil: Path `validUntil` is required., description: Path `description` is required.\n    at model.Document.invalidate (E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\document.js:3354:32)\n    at E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\document.js:3115:17\n    at E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\schemaType.js:1410:9\n    at processTicksAndRejections (node:internal/process/task_queues:85:11)"
+          },
+          {
+            "title": "✗ Should reject if user max uses exceeded",
+            "message": "ValidationError: Coupon validation failed: validUntil: Path `validUntil` is required., description: Path `description` is required.\n    at model.Document.invalidate (E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\document.js:3354:32)\n    at E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\document.js:3115:17\n    at E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\schemaType.js:1410:9\n    at processTicksAndRejections (node:internal/process/task_queues:85:11)"
+          },
+          {
+            "title": "✓ Should calculate percentage discount correctly",
+            "message": "ValidationError: Coupon validation failed: validUntil: Path `validUntil` is required., description: Path `description` is required.\n    at model.Document.invalidate (E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\document.js:3354:32)\n    at E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\document.js:3115:17\n    at E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\schemaType.js:1410:9\n    at processTicksAndRejections (node:internal/process/task_queues:85:11)"
+          },
+          {
+            "title": "✓ Should apply fixed discount",
+            "message": "ValidationError: Coupon validation failed: validUntil: Path `validUntil` is required., description: Path `description` is required.\n    at model.Document.invalidate (E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\document.js:3354:32)\n    at E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\document.js:3115:17\n    at E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\schemaType.js:1410:9\n    at processTicksAndRejections (node:internal/process/task_queues:85:11)"
+          }
+        ]
+      },
+      "status": "test-target-missing-route"
+    },
+    {
+      "key": "POST /api/v1/orders",
+      "method": "POST",
+      "path": "/api/v1/orders",
+      "implemented": false,
+      "modules": [],
+      "testFiles": [
+        "tests\\orders.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 6,
+        "passed": 6,
+        "failed": 0,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\orders.test.js"
+        ],
+        "failures": []
+      },
+      "status": "test-target-missing-route"
+    },
+    {
+      "key": "POST /api/v1/payments/initiate",
+      "method": "POST",
+      "path": "/api/v1/payments/initiate",
+      "implemented": false,
+      "modules": [],
+      "testFiles": [
+        "tests\\orders.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 3,
+        "passed": 3,
+        "failed": 0,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\orders.test.js"
+        ],
+        "failures": []
+      },
+      "status": "test-target-missing-route"
+    },
+    {
+      "key": "POST /api/v1/payments/verify",
+      "method": "POST",
+      "path": "/api/v1/payments/verify",
+      "implemented": false,
+      "modules": [],
+      "testFiles": [
+        "tests\\orders.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 2,
+        "passed": 2,
+        "failed": 0,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\orders.test.js"
+        ],
+        "failures": []
+      },
+      "status": "test-target-missing-route"
+    },
+    {
+      "key": "POST /api/v1/products",
+      "method": "POST",
+      "path": "/api/v1/products",
+      "implemented": false,
+      "modules": [],
+      "testFiles": [
+        "tests\\products.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 7,
+        "passed": 7,
+        "failed": 0,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\products.test.js"
+        ],
+        "failures": []
+      },
+      "status": "test-target-missing-route"
+    },
+    {
+      "key": "POST /api/v1/reviews",
+      "method": "POST",
+      "path": "/api/v1/reviews",
+      "implemented": false,
+      "modules": [],
+      "testFiles": [
+        "tests\\reviews.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 8,
+        "passed": 8,
+        "failed": 0,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\reviews.test.js"
+        ],
+        "failures": []
+      },
+      "status": "test-target-missing-route"
+    },
+    {
+      "key": "POST /api/v1/reviews/:id/helpful",
+      "method": "POST",
+      "path": "/api/v1/reviews/:id/helpful",
+      "implemented": false,
+      "modules": [],
+      "testFiles": [
+        "tests\\reviews.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 4,
+        "passed": 4,
+        "failed": 0,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\reviews.test.js"
+        ],
+        "failures": []
+      },
+      "status": "test-target-missing-route"
+    },
+    {
+      "key": "POST /categories",
+      "method": "POST",
+      "path": "/categories",
+      "implemented": true,
+      "modules": [
+        "admin"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "POST /invoices/:id/cancel",
+      "method": "POST",
+      "path": "/invoices/:id/cancel",
+      "implemented": true,
+      "modules": [
+        "admin"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "POST /invoices/:id/payment",
+      "method": "POST",
+      "path": "/invoices/:id/payment",
+      "implemented": true,
+      "modules": [
+        "admin"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "POST /invoices/orders/:orderId/generate",
+      "method": "POST",
+      "path": "/invoices/orders/:orderId/generate",
+      "implemented": true,
+      "modules": [
+        "admin"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "POST /items",
+      "method": "POST",
+      "path": "/items",
+      "implemented": true,
+      "modules": [
+        "cart"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "POST /products",
+      "method": "POST",
+      "path": "/products",
+      "implemented": true,
+      "modules": [
+        "admin"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "POST /send",
+      "method": "POST",
+      "path": "/send",
+      "implemented": true,
+      "modules": [
+        "notifications"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "POST /set-threshold",
+      "method": "POST",
+      "path": "/set-threshold",
+      "implemented": true,
+      "modules": [
+        "inventory"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "POST /validate",
+      "method": "POST",
+      "path": "/validate",
+      "implemented": true,
+      "modules": [
+        "coupons"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "PUT /:id",
+      "method": "PUT",
+      "path": "/:id",
+      "implemented": true,
+      "modules": [
+        "coupons",
+        "products",
+        "reviews",
+        "user"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "PUT /:id/approve",
+      "method": "PUT",
+      "path": "/:id/approve",
+      "implemented": true,
+      "modules": [
+        "reviews"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "PUT /:id/cancel",
+      "method": "PUT",
+      "path": "/:id/cancel",
+      "implemented": true,
+      "modules": [
+        "orders"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "PUT /:id/read",
+      "method": "PUT",
+      "path": "/:id/read",
+      "implemented": true,
+      "modules": [
+        "notifications"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "PUT /:id/status",
+      "method": "PUT",
+      "path": "/:id/status",
+      "implemented": true,
+      "modules": [
+        "orders"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "PUT /admin/:id/approve",
+      "method": "PUT",
+      "path": "/admin/:id/approve",
+      "implemented": true,
+      "modules": [
+        "reviews"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "PUT /admin/:id/reject",
+      "method": "PUT",
+      "path": "/admin/:id/reject",
+      "implemented": true,
+      "modules": [
+        "reviews"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "PUT /admin/shipments/:id",
+      "method": "PUT",
+      "path": "/admin/shipments/:id",
+      "implemented": true,
+      "modules": [
+        "shipments"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "PUT /api/v1/admin/products/:id/approve",
+      "method": "PUT",
+      "path": "/api/v1/admin/products/:id/approve",
+      "implemented": false,
+      "modules": [],
+      "testFiles": [
+        "tests\\admin.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 3,
+        "passed": 1,
+        "failed": 2,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\admin.test.js"
+        ],
+        "failures": [
+          {
+            "title": "✓ Should approve product",
+            "message": "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: true\nReceived: undefined\n    at Object.<anonymous> (E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\tests\\admin.test.js:302:40)\n    at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+          },
+          {
+            "title": "✓ Should reject product with reason",
+            "message": "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: false\nReceived: undefined\n    at Object.<anonymous> (E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\tests\\admin.test.js:315:40)\n    at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+          }
+        ]
+      },
+      "status": "test-target-missing-route"
+    },
+    {
+      "key": "PUT /api/v1/auth/profile",
+      "method": "PUT",
+      "path": "/api/v1/auth/profile",
+      "implemented": true,
+      "modules": [
+        "auth"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "PUT /api/v1/auth/user/:id",
+      "method": "PUT",
+      "path": "/api/v1/auth/user/:id",
+      "implemented": true,
+      "modules": [
+        "auth"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "PUT /api/v1/cart/update",
+      "method": "PUT",
+      "path": "/api/v1/cart/update",
+      "implemented": false,
+      "modules": [],
+      "testFiles": [
+        "tests\\cart.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 3,
+        "passed": 2,
+        "failed": 1,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\cart.test.js"
+        ],
+        "failures": [
+          {
+            "title": "✓ Should update item quantity",
+            "message": "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: 200\nReceived: 400\n    at Object.<anonymous> (E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\tests\\cart.test.js:223:26)\n    at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+          }
+        ]
+      },
+      "status": "test-target-missing-route"
+    },
+    {
+      "key": "PUT /api/v1/coupons/:id",
+      "method": "PUT",
+      "path": "/api/v1/coupons/:id",
+      "implemented": false,
+      "modules": [],
+      "testFiles": [
+        "tests\\coupons.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 2,
+        "passed": 0,
+        "failed": 2,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\coupons.test.js"
+        ],
+        "failures": [
+          {
+            "title": "✓ Should update coupon",
+            "message": "ValidationError: Coupon validation failed: validUntil: Path `validUntil` is required., description: Path `description` is required.\n    at model.Document.invalidate (E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\document.js:3354:32)\n    at E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\document.js:3115:17\n    at E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\schemaType.js:1410:9\n    at processTicksAndRejections (node:internal/process/task_queues:85:11)"
+          },
+          {
+            "title": "✗ Should not allow users to update",
+            "message": "ValidationError: Coupon validation failed: validUntil: Path `validUntil` is required., description: Path `description` is required.\n    at model.Document.invalidate (E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\document.js:3354:32)\n    at E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\document.js:3115:17\n    at E:\\aqherbal_backend-dev\\aqherbal_backend-dev\\node_modules\\mongoose\\lib\\schemaType.js:1410:9\n    at processTicksAndRejections (node:internal/process/task_queues:85:11)"
+          }
+        ]
+      },
+      "status": "test-target-missing-route"
+    },
+    {
+      "key": "PUT /api/v1/orders/:id/cancel",
+      "method": "PUT",
+      "path": "/api/v1/orders/:id/cancel",
+      "implemented": false,
+      "modules": [],
+      "testFiles": [
+        "tests\\orders.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 3,
+        "passed": 3,
+        "failed": 0,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\orders.test.js"
+        ],
+        "failures": []
+      },
+      "status": "test-target-missing-route"
+    },
+    {
+      "key": "PUT /api/v1/products/:id",
+      "method": "PUT",
+      "path": "/api/v1/products/:id",
+      "implemented": false,
+      "modules": [],
+      "testFiles": [
+        "tests\\products.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 2,
+        "passed": 2,
+        "failed": 0,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\products.test.js"
+        ],
+        "failures": []
+      },
+      "status": "test-target-missing-route"
+    },
+    {
+      "key": "PUT /api/v1/reviews/:id",
+      "method": "PUT",
+      "path": "/api/v1/reviews/:id",
+      "implemented": false,
+      "modules": [],
+      "testFiles": [
+        "tests\\reviews.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 2,
+        "passed": 2,
+        "failed": 0,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\reviews.test.js"
+        ],
+        "failures": []
+      },
+      "status": "test-target-missing-route"
+    },
+    {
+      "key": "PUT /api/v1/reviews/:id/approve",
+      "method": "PUT",
+      "path": "/api/v1/reviews/:id/approve",
+      "implemented": false,
+      "modules": [],
+      "testFiles": [
+        "tests\\reviews.test.js"
+      ],
+      "describedTestBlocks": 1,
+      "assertions": {
+        "total": 3,
+        "passed": 3,
+        "failed": 0,
+        "pending": 0,
+        "suiteFiles": [
+          "tests\\reviews.test.js"
+        ],
+        "failures": []
+      },
+      "status": "test-target-missing-route"
+    },
+    {
+      "key": "PUT /categories/:id",
+      "method": "PUT",
+      "path": "/categories/:id",
+      "implemented": true,
+      "modules": [
+        "admin"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "PUT /invoices/:id/status",
+      "method": "PUT",
+      "path": "/invoices/:id/status",
+      "implemented": true,
+      "modules": [
+        "admin"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "PUT /items/:productId",
+      "method": "PUT",
+      "path": "/items/:productId",
+      "implemented": true,
+      "modules": [
+        "cart"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "PUT /products/:id",
+      "method": "PUT",
+      "path": "/products/:id",
+      "implemented": true,
+      "modules": [
+        "admin"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "PUT /products/:id/approve",
+      "method": "PUT",
+      "path": "/products/:id/approve",
+      "implemented": true,
+      "modules": [
+        "admin"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "PUT /read-all",
+      "method": "PUT",
+      "path": "/read-all",
+      "implemented": true,
+      "modules": [
+        "notifications"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "PUT /update",
+      "method": "PUT",
+      "path": "/update",
+      "implemented": true,
+      "modules": [
+        "cart"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "PUT /update/:id",
+      "method": "PUT",
+      "path": "/update/:id",
+      "implemented": true,
+      "modules": [
+        "user"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "PUT /users/:id",
+      "method": "PUT",
+      "path": "/users/:id",
+      "implemented": true,
+      "modules": [
+        "admin"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "PUT /users/:id/ban",
+      "method": "PUT",
+      "path": "/users/:id/ban",
+      "implemented": true,
+      "modules": [
+        "admin"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    },
+    {
+      "key": "PUT /users/:id/unban",
+      "method": "PUT",
+      "path": "/users/:id/unban",
+      "implemented": true,
+      "modules": [
+        "admin"
+      ],
+      "testFiles": [],
+      "describedTestBlocks": 0,
+      "assertions": null,
+      "status": "untested"
+    }
+  ]
+}

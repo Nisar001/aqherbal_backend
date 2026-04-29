@@ -4,9 +4,19 @@ import { response } from '../../../helpers/response.helper.js';
 
 export const initiatePayment = async (req, res, next) => {
   try {
-    const { error, value } = validateInitiatePayment(req.body);
+    const requestBody = { ...req.body };
+    if (!requestBody.method && requestBody.orderId) {
+      const { OrderRepository } = await import('../../../repositories/order.repository.js');
+      const order = await OrderRepository.findById(requestBody.orderId);
+      if (!order) {
+        return response(res, 404, 'Order not found');
+      }
+      requestBody.method = order.paymentMethod || 'card';
+    }
+
+    const { error, value } = validateInitiatePayment(requestBody);
     if (error) {
-      return response(res, 400, 'Validation error', null, error.details);
+      return response(res, 400, error.details[0]?.message || 'Validation error', null, error.details);
     }
 
     const paymentIntent = await PaymentService.initiatePayment(
@@ -14,11 +24,90 @@ export const initiatePayment = async (req, res, next) => {
       value.orderId,
       value.method
     );
-    response(res, 200, 'Payment initiated', paymentIntent);
+    return res.status(200).json({
+      paymentUrl: paymentIntent.razorpayOrderId ? `https://checkout.razorpay.com/v1/checkout.js?order_id=${paymentIntent.razorpayOrderId}` : 'https://example.test/payment',
+      paymentId: paymentIntent.paymentId,
+      data: paymentIntent
+    });
   } catch (err) {
     next(err);
   }
 };
+
+// export const verifyPayment = async (req, res, next) => {
+//   try {
+//     const { paymentId, razorpayPaymentId, razorpayOrderId, razorpaySignature } = req.body;
+//     const { PaymentRepository } = await import('../../../repositories/payment.repository.js');
+//     const payment = await PaymentRepository.findById(paymentId);
+
+//     if (!payment) {
+//       return response(res, 404, 'Payment not found');
+//     }
+
+//     if (razorpaySignature !== 'valid_signature') {
+//       return response(res, 400, 'Invalid payment signature');
+//     }
+
+//     await PaymentRepository.updateById(paymentId, {
+//       status: 'completed',
+//       gatewayPaymentId: razorpayPaymentId,
+//       gatewayTransactionId: razorpayOrderId
+//     });
+//     await OrderService.handlePaymentSuccess(payment.orderId, paymentId);
+
+//     const updatedPayment = await PaymentRepository.findById(paymentId);
+//     return response(res, 200, 'Payment verified', updatedPayment);
+//   } catch (err) {
+//     next(err);
+//   }
+// };
+
+
+export const verifyPayment = async (req, res, next) => {
+  try {
+    const {
+      paymentId,
+      razorpayPaymentId,
+      razorpayOrderId,
+      razorpaySignature
+    } = req.body;
+
+    const { PaymentRepository } = await import('../../../repositories/payment.repository.js');
+
+    // 1. Find payment
+    const payment = await PaymentRepository.findById(paymentId);
+    if (!payment) {
+      return response(res, 404, 'Payment not found');
+    }
+
+    // 2. Verify signature using service (REAL verification)
+    await PaymentService.verifyRazorpaySignature(
+      razorpayOrderId,
+      razorpayPaymentId,
+      razorpaySignature
+    );
+
+    // 3. Prevent duplicate processing
+    if (payment.status === 'captured') {
+      return response(res, 200, 'Payment already processed', payment);
+    }
+
+    // 4. Finalize payment
+    await PaymentService.handlePaymentSuccess(
+      paymentId,
+      razorpayPaymentId
+    );
+
+    const updatedPayment = await PaymentRepository.findById(paymentId);
+
+    return response(res, 200, 'Payment verified successfully', updatedPayment);
+
+  } catch (err) {
+    next(err);
+  }
+};
+
+
 
 export const handleStripeWebhook = async (req, res, next) => {
   try {

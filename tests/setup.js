@@ -6,6 +6,7 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import { jest } from '@jest/globals';
+import jwt from 'jsonwebtoken';
 
 // Set test environment before loading modules
 process.env.NODE_ENV = 'test';
@@ -118,12 +119,17 @@ export const mockServices = {
 /**
  * Generate Test JWT Token
  */
-export const generateTestToken = (userId, role = 'user') => {
-  const jwt = require('jsonwebtoken');
+export const generateTestToken = (userId, role = 'user', expiresIn = '1h') => {
   const token = jwt.sign(
-    { userId, role, email: `test${userId}@example.com` },
-    process.env.JWT_SECRET || 'test_secret',
-    { expiresIn: '1h' }
+    {
+      _id: userId,
+      id: userId,
+      userId,
+      role,
+      email: `test${userId}@example.com`,
+    },
+    process.env.JWT_SECRET || process.env.JEST_JWT_SECRET || 'test_secret_only_for_testing',
+    { expiresIn }
   );
   return token;
 };

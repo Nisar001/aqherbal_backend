@@ -12,7 +12,9 @@ const reviewSchema = new mongoose.Schema({
   rejectionReason: String,
   isVerified: { type: Boolean, default: false }, // Set to true only if user purchased product
   helpfulCount: { type: Number, default: 0 },
+  notHelpfulCount: { type: Number, default: 0 },
   helpfulBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // Track users who found it helpful (prevent duplicates)
+  notHelpfulBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   isDeleted: { type: Boolean, default: false, index: true },
   deletedAt: { type: Date }
 }, { timestamps: true });

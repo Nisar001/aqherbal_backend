@@ -3,7 +3,7 @@ import { config } from '../config/config.js';
 
 const defaultOptions = {
   maxDepth: Number(config.security.maxDepth) || 8,
-  maxStringLength: Number(config.security.maxStringLength) || 5000
+  maxStringLength: Math.max(Number(config.security.maxStringLength) || 0, 50000)
 };
 
 export const sanitizeRequestMiddleware = (req, res, next) => {

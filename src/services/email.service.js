@@ -317,6 +317,16 @@ const transporter = nodemailer.createTransport({
 
 export const sendEmail = async ({ to, subject, html }) => {
   try {
+    if (process.env.NODE_ENV === 'test') {
+      return {
+        accepted: [to],
+        rejected: [],
+        messageId: `test-${Date.now()}`,
+        subject,
+        html
+      };
+    }
+
     const info = await transporter.sendMail({
       from: `AQHerbal <${config.smtp.user}>`,
       to,
@@ -330,4 +340,3 @@ export const sendEmail = async ({ to, subject, html }) => {
     throw error;
   }
 };
-
