@@ -23,6 +23,12 @@ export const ReviewService = {
       throw new AppError('Valid purchase required', 403);
     }
 
+    // Validate orderId is a valid ObjectId to avoid CastError
+    const mongoose = await import('mongoose').then(m => m.default);
+    if (!mongoose.Types.ObjectId.isValid(orderId)) {
+      throw new AppError('Valid purchase required', 403);
+    }
+
     const order = await OrderRepository.findById(orderId);
     const hasValidOwnership = order && order.userId.toString() === userId;
     const hasProduct = hasValidOwnership && order.items.some(item => item.productId.toString() === productId);

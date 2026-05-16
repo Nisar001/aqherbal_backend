@@ -10,6 +10,7 @@ const addressSchema = new mongoose.Schema({
   city: String,
   state: String,
   zip: String,
+  postalCode: String,
   pincode: String,
   country: { type: String, default: 'India' }
 });
@@ -30,6 +31,7 @@ const statusHistorySchema = new mongoose.Schema({
 const orderProductSchema = new mongoose.Schema({
   productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
   quantity: Number,
+  price: Number,
   priceAtPurchase: Number,
   discountApplied: { type: Number, default: 0 }
 });
@@ -44,10 +46,12 @@ const orderSchema = new mongoose.Schema({
   discountAmount: { type: Number, default: 0 },
   couponCode: String,
   couponDiscount: { type: Number, default: 0 },
+  appliedCoupon: { type: String },
   totalAmount: { type: Number, min: 0 },
+  paymentMethod: { type: String },
   status: { type: String, enum: Object.values(ORDER_STATUS), default: ORDER_STATUS.PENDING, index: true },
   paymentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Payment' },
-  paymentStatus: { type: String, enum: ['pending', 'authorized', 'captured', 'failed', 'refunded'], default: 'pending' },
+  paymentStatus: { type: String, enum: ['pending', 'authorized', 'captured', 'failed', 'refunded', 'completed'], default: 'pending' },
   shippingAddress: addressSchema,
   trackingNumber: String,
   statusHistory: [statusHistorySchema],

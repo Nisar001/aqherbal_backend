@@ -7,11 +7,7 @@ export const validateCreateCoupon = Joi.object({
       'string.min': 'Coupon code must be at least 3 characters',
       'string.max': 'Coupon code cannot exceed 20 characters'
     }),
-  description: Joi.string().min(10).max(200).required()
-    .messages({
-      'string.empty': 'Description is required',
-      'string.min': 'Description must be at least 10 characters'
-    }),
+  description: Joi.string().min(0).max(200).allow('', null).optional().default(''),
   discountType: Joi.string().valid('percentage', 'fixed').required()
     .messages({
       'any.only': 'Discount type must be either percentage or fixed'
@@ -26,23 +22,23 @@ export const validateCreateCoupon = Joi.object({
   maxUses: Joi.number().integer().positive().allow(null).default(null),
   maxUsesPerUser: Joi.number().integer().positive().default(1),
   validFrom: Joi.date().iso().default(() => new Date()),
-  validUntil: Joi.date().iso().greater(Joi.ref('validFrom')).required()
-    .messages({
-      'date.greater': 'Valid until date must be after valid from date'
-    }),
+  validUntil: Joi.date().iso().optional(),
+  expiryDate: Joi.date().iso().optional(),
   isActive: Joi.boolean().default(true),
   applicableCategories: Joi.array().items(Joi.string().hex().length(24)).default([]),
   applicableProducts: Joi.array().items(Joi.string().hex().length(24)).default([])
 });
 
 export const validateUpdateCoupon = Joi.object({
-  description: Joi.string().min(10).max(200),
+  description: Joi.string().min(0).max(200).allow('', null).optional(),
   discountValue: Joi.number().positive(),
   minOrderValue: Joi.number().min(0),
   maxDiscount: Joi.number().positive().allow(null),
   maxUses: Joi.number().integer().positive().allow(null),
   maxUsesPerUser: Joi.number().integer().positive(),
   validUntil: Joi.date().iso(),
+  expiryDate: Joi.date().iso(),
+  currentUses: Joi.number().integer().min(0),
   isActive: Joi.boolean(),
   applicableCategories: Joi.array().items(Joi.string().hex().length(24)),
   applicableProducts: Joi.array().items(Joi.string().hex().length(24))
@@ -53,8 +49,8 @@ export const validateApplyCoupon = Joi.object({
     .messages({
       'string.empty': 'Coupon code is required'
     }),
-  orderTotal: Joi.number().positive().required()
-    .messages({
-      'number.positive': 'Order total must be positive'
-    })
-});
+  orderTotal: Joi.number().positive().optional(),
+  orderAmount: Joi.number().positive().optional(),
+  cartItems: Joi.array().optional()
+}).or('orderTotal', 'orderAmount');
+

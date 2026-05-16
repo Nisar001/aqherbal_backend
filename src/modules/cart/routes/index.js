@@ -1,6 +1,6 @@
 import express from 'express';
 import { authenticate } from '../../../middlewares/auth.middleware.js';
-import { getCart, addToCart, updateCartItem, removeFromCart, clearCart } from '../controllers/index.js';
+import { getCart, addToCart, updateCartItem, removeFromCart, clearCart, applyCoupon } from '../controllers/index.js';
 
 const router = express.Router();
 
@@ -9,12 +9,15 @@ router.use(authenticate);
 
 router.get('/', getCart);
 router.post('/add', addToCart);
-// router.put('/update', (req, _res, next) => {
-//   if (!req.params.productId && req.body?.productId) {
-//     req.params.productId = req.body.productId;
-//   }
-//   next();
-// }, updateCartItem);
+router.post('/apply-coupon', applyCoupon);
+
+// Support both /update (with body productId) and /update/:productId (with URL param)
+router.put('/update', (req, _res, next) => {
+  if (!req.params.productId && req.body?.productId) {
+    req.params.productId = req.body.productId;
+  }
+  next();
+}, updateCartItem);
 router.put('/update/:productId', updateCartItem);
 
 router.delete('/remove/:productId', removeFromCart);

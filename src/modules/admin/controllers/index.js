@@ -44,7 +44,13 @@ export const getUserById = async (req, res, next) => {
       throw new AppError('User not found', 404);
     }
 
-    return successResponse(res, user, 'User retrieved successfully');
+    // Fetch user's orders
+    const orders = await OrderModel.find({ userId: id, isDeleted: false })
+      .sort({ createdAt: -1 })
+      .limit(20)
+      .lean();
+
+    return successResponse(res, { ...user.toObject(), orders }, 'User retrieved successfully');
   } catch (error) {
     next(error);
   }
@@ -266,19 +272,29 @@ export const deleteCategory = async (req, res, next) => {
 // Analytics
 export const getDashboardStats = async (req, res, next) => {
   try {
+    const today = new Date();
+    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+
     const [
       totalUsers,
       totalProducts,
+      pendingProducts,
       totalOrders,
-      totalRevenue,
+      totalRevenueAgg,
+      thisMonthRevenueAgg,
       pendingOrders,
       lowStockProducts
     ] = await Promise.all([
       UserModel.countDocuments({ isDeleted: false, role: 'user' }),
       ProductModel.countDocuments({ isDeleted: false }),
+      ProductModel.countDocuments({ isDeleted: false, isApproved: false }),
       OrderModel.countDocuments({ isDeleted: false }),
       OrderModel.aggregate([
         { $match: { isDeleted: false, status: 'delivered' } },
+        { $group: { _id: null, total: { $sum: '$totalAmount' } } }
+      ]),
+      OrderModel.aggregate([
+        { $match: { isDeleted: false, status: 'delivered', createdAt: { $gte: startOfMonth } } },
         { $group: { _id: null, total: { $sum: '$totalAmount' } } }
       ]),
       OrderModel.countDocuments({ status: 'pending', isDeleted: false }),
@@ -288,13 +304,21 @@ export const getDashboardStats = async (req, res, next) => {
       })
     ]);
 
+    const totalRevenue = totalRevenueAgg[0]?.total || 0;
+    const thisMonthRevenue = thisMonthRevenueAgg[0]?.total || 0;
+
     const stats = {
       totalUsers,
       totalProducts,
+      pendingProducts,
       totalOrders,
-      totalRevenue: totalRevenue[0]?.total || 0,
+      totalRevenue,
       pendingOrders,
-      lowStockProducts
+      lowStockProducts,
+      sales: {
+        total: totalRevenue,
+        thisMonth: thisMonthRevenue
+      }
     };
 
     return successResponse(res, stats, 'Dashboard stats retrieved successfully');
@@ -431,6 +455,137 @@ export const getRevenueStats = async (req, res, next) => {
     };
 
     return successResponse(res, stats, 'Revenue stats retrieved successfully');
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Approve or reject a product
+export const approveProduct = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { approved, rejectionReason } = req.body;
+
+    const product = await ProductModel.findByIdAndUpdate(
+      id,
+      {
+        isApproved: approved === true,
+        ...(rejectionReason ? { rejectionReason } : {})
+      },
+      { new: true }
+    );
+
+    if (!product) {
+      throw new AppError('Product not found', 404);
+    }
+
+    return successResponse(res, product, approved ? 'Product approved successfully' : 'Product rejected');
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Get pending products
+export const getPendingProducts = async (req, res, next) => {
+  try {
+    const products = await ProductModel.find({ isApproved: false, isDeleted: false })
+      .sort({ createdAt: -1 });
+    return successResponse(res, products, 'Pending products retrieved successfully');
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Get all orders (admin)
+export const getAllOrders = async (req, res, next) => {
+  try {
+    const query = buildQuery(req.query, {
+      defaultLimit: 20,
+      maxLimit: 100,
+      allowedFilters: ['status', 'paymentStatus'],
+      allowedSortFields: ['createdAt', 'totalAmount']
+    });
+
+    const mongoQuery = { isDeleted: false, ...query.filter };
+
+    const orders = await OrderModel.find(mongoQuery)
+      .sort(query.sort)
+      .skip(query.pagination.skip)
+      .limit(query.pagination.limit);
+
+    const total = await OrderModel.countDocuments(mongoQuery);
+    const response = formatPaginatedData(orders, total, query.pagination.page, query.pagination.limit);
+    return res.status(200).json({ success: true, ...response, message: 'Orders retrieved successfully' });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Get sales analytics
+export const getAnalytics = async (req, res, next) => {
+  try {
+    const { startDate, endDate } = req.query;
+    const today = new Date();
+    const twelveMonthsAgo = new Date(today.getFullYear() - 1, today.getMonth(), 1);
+
+    const matchStage = { isDeleted: false };
+    if (startDate && endDate) {
+      matchStage.createdAt = { $gte: new Date(startDate), $lte: new Date(endDate) };
+    }
+
+    const [salesByMonth, topProducts, customerGrowth] = await Promise.all([
+      // Sales by month (last 12 months)
+      OrderModel.aggregate([
+        { $match: { ...matchStage, status: 'delivered', createdAt: { $gte: twelveMonthsAgo } } },
+        {
+          $group: {
+            _id: { year: { $year: '$createdAt' }, month: { $month: '$createdAt' } },
+            totalSales: { $sum: '$totalAmount' },
+            orderCount: { $sum: 1 }
+          }
+        },
+        { $sort: { '_id.year': 1, '_id.month': 1 } }
+      ]),
+
+      // Top products by revenue
+      OrderModel.aggregate([
+        { $match: { isDeleted: false, status: 'delivered' } },
+        { $unwind: '$items' },
+        {
+          $group: {
+            _id: '$items.productId',
+            totalRevenue: { $sum: { $multiply: ['$items.price', '$items.quantity'] } },
+            totalQuantity: { $sum: '$items.quantity' }
+          }
+        },
+        { $sort: { totalRevenue: -1 } },
+        { $limit: 10 }
+      ]),
+
+      // Customer growth by month
+      UserModel.aggregate([
+        { $match: { isDeleted: false, role: 'user', createdAt: { $gte: twelveMonthsAgo } } },
+        {
+          $group: {
+            _id: { year: { $year: '$createdAt' }, month: { $month: '$createdAt' } },
+            count: { $sum: 1 }
+          }
+        },
+        { $sort: { '_id.year': 1, '_id.month': 1 } }
+      ])
+    ]);
+
+    return successResponse(res, { salesByMonth, topProducts, customerGrowth }, 'Analytics retrieved successfully');
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Get admin action logs (placeholder with empty array)
+export const getAdminLogs = async (req, res, next) => {
+  try {
+    // Return empty array for now — logs are stored elsewhere or not yet implemented
+    return successResponse(res, [], 'Admin logs retrieved successfully');
   } catch (error) {
     next(error);
   }

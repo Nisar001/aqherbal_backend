@@ -11,6 +11,7 @@ const cartSchema = new mongoose.Schema({
   subtotal: { type: Number, default: 0, min: 0 },
   tax: { type: Number, default: 0, min: 0 },
   total: { type: Number, default: 0, min: 0 },
+  appliedCoupon: { type: String, default: null },
   isDeleted: { type: Boolean, default: false },
   deletedAt: { type: Date }
 }, { timestamps: true });

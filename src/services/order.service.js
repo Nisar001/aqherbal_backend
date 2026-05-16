@@ -84,6 +84,7 @@ export const OrderService = {
       shippingCost,
       totalAmount,
       couponCode: appliedCoupon?.code || null,
+      appliedCoupon: appliedCoupon?.code || null,
       couponDiscount: appliedCoupon?.discountAmount || 0,
       shippingAddress,
       paymentMethod,

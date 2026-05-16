@@ -3,10 +3,10 @@ import { ProductRepository } from '../repositories/product.repository.js';
 import { AppError } from '../middlewares/error.middleware.js';
 
 class CouponServiceImpl {
-  async createCoupon(data, adminId) {
+  async createCoupon(data, userId) {
     // Check if coupon code already exists
-    const existing = await CouponRepository.findByCode(data.code);
-    if (existing) {
+    const existingCoupon = await CouponRepository.findByCode(data.code);
+    if (existingCoupon) {
       throw new AppError('Coupon code already exists', 400);
     }
 
@@ -15,10 +15,23 @@ class CouponServiceImpl {
       throw new AppError('Percentage discount cannot exceed 100%', 400);
     }
 
+    // Validate expiry date is in future
+    const expiresAt = data.expiryDate || data.validUntil;
+    if (expiresAt && new Date(expiresAt) <= new Date()) {
+      throw new AppError('Expiry date must be in the future', 400);
+    }
+
+    // Sync expiryDate and validUntil
+    if (data.expiryDate && !data.validUntil) {
+      data.validUntil = data.expiryDate;
+    } else if (data.validUntil && !data.expiryDate) {
+      data.expiryDate = data.validUntil;
+    }
+
     // Create coupon
     const coupon = await CouponRepository.create({
       ...data,
-      createdBy: adminId
+      createdBy: userId
     });
 
     return coupon;
@@ -65,25 +78,55 @@ class CouponServiceImpl {
   }
 
   async validateAndApplyCoupon(code, userId, orderTotal, cartItems = []) {
-    // Find active coupon
-    const coupon = await CouponRepository.findActiveByCode(code);
-    if (!coupon) {
-      throw new AppError('Invalid or expired coupon code', 400);
+    // Find active coupon (by code, case-insensitive)
+    const coupon = await CouponRepository.findByCode(code);
+    if (!coupon || coupon.isDeleted) {
+      throw new AppError('Coupon code is invalid or does not exist', 400);
     }
 
-    // Check if coupon is valid (date, usage limits)
-    if (!coupon.isValid()) {
-      throw new AppError('Coupon is no longer valid', 400);
+    // Check expiry
+    const now = new Date();
+    const expiresAt = coupon.validUntil || coupon.expiryDate;
+    if (expiresAt && expiresAt < now) {
+      throw new AppError('This coupon has expired', 400);
     }
 
-    // Check user usage limit
-    if (!coupon.canUserUse(userId)) {
+    // Check if active
+    if (!coupon.isActive) {
+      throw new AppError('This coupon is no longer active', 400);
+    }
+
+    // Check usage limits - support both usedCount and currentUses field names
+    const actualUsedCount = coupon.currentUses ?? coupon.usedCount ?? 0;
+    if (coupon.maxUses !== null && actualUsedCount >= coupon.maxUses) {
+      throw new AppError('This coupon has reached its usage limit', 400);
+    }
+
+    // Check user usage limit - check usageHistory first, then orders as fallback
+    const usageInHistory = coupon.usageHistory.filter(
+      (history) => history.userId.toString() === userId.toString()
+    ).length;
+
+    let userUsageCount = usageInHistory;
+    if (usageInHistory === 0 && coupon.maxUsesPerUser > 0) {
+      // Also check orders DB for this user's usage
+      const { default: OrderModel } = await import('../models/order.model.js').catch(() => ({ default: null }));
+      if (OrderModel) {
+        userUsageCount = await OrderModel.countDocuments({
+          userId,
+          appliedCoupon: coupon._id,
+          isDeleted: false
+        });
+      }
+    }
+
+    if (coupon.maxUsesPerUser && userUsageCount >= coupon.maxUsesPerUser) {
       throw new AppError(`You have already used this coupon the maximum number of times (${coupon.maxUsesPerUser})`, 400);
     }
 
     // Check minimum order value
     if (orderTotal < coupon.minOrderValue) {
-      throw new AppError(`Minimum order value of ₹${coupon.minOrderValue} required to use this coupon`, 400);
+      throw new AppError(`minimum order value of ₹${coupon.minOrderValue} required to use this coupon`, 400);
     }
 
     // Check if coupon is applicable to products/categories

@@ -35,9 +35,10 @@ export const createOrder = async (req, res, next) => {
       value.couponCode,
       value.paymentMethod
     );
+    const orderObj = typeof order.toObject === 'function' ? order.toObject() : order;
     response(res, 201, 'Order created successfully', {
-      ...order.toObject(),
-      orderId: order._id
+      ...orderObj,
+      orderId: orderObj._id
     });
   } catch (err) {
     next(err);

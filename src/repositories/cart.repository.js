@@ -22,6 +22,25 @@ class CartRepositoryImpl extends BaseRepository {
     ).populate('items.productId');
   }
 
+  // Atomic increment - concurrent-safe for simultaneous add operations
+  async incrementItemQuantity(userId, productId, incrementBy) {
+    // First try to increment existing item
+    const updated = await CartModel.findOneAndUpdate(
+      { userId, isDeleted: false, 'items.productId': productId },
+      { $inc: { 'items.$.quantity': incrementBy }, updatedAt: new Date() },
+      { new: true }
+    ).populate('items.productId');
+
+    if (updated) return updated;
+
+    // Item doesn't exist yet - add it
+    return CartModel.findOneAndUpdate(
+      { userId, isDeleted: false },
+      { $push: { items: { productId, quantity: incrementBy } }, updatedAt: new Date() },
+      { new: true, upsert: true }
+    ).populate('items.productId');
+  }
+
   async addItem(userId, productId, quantity) {
     return CartModel.findOneAndUpdate(
       { userId, isDeleted: false },

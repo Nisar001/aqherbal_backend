@@ -5,7 +5,8 @@ export const ORDER_STATUS = {
   SHIPPED: 'shipped',
   DELIVERED: 'delivered',
   CANCELLED: 'cancelled',
-  REFUNDED: 'refunded'
+  REFUNDED: 'refunded',
+  COMPLETED: 'completed'
 };
 // export const ORDER_STATUS = Object.freeze({
 //   PENDING: 'pending',

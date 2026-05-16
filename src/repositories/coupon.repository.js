@@ -19,8 +19,10 @@ class CouponRepositoryImpl extends BaseRepository {
       code: code.toUpperCase(),
       isActive: true,
       isDeleted: false,
-      validFrom: { $lte: now },
-      validUntil: { $gte: now }
+      $or: [
+        { validUntil: { $gte: now } },
+        { expiryDate: { $gte: now } }
+      ]
     });
   }
 
@@ -58,7 +60,7 @@ class CouponRepositoryImpl extends BaseRepository {
     return await this.model.findByIdAndUpdate(
       couponId,
       {
-        $inc: { usedCount: 1 },
+        $inc: { usedCount: 1, currentUses: 1 },
         $push: {
           usageHistory: {
             userId,

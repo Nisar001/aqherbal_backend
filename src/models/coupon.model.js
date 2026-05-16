@@ -12,7 +12,8 @@ const couponSchema = new mongoose.Schema(
     },
     description: {
       type: String,
-      required: true
+      required: false,
+      default: ''
     },
     discountType: {
       type: String,
@@ -41,6 +42,10 @@ const couponSchema = new mongoose.Schema(
       type: Number,
       default: 0
     },
+    currentUses: {
+      type: Number,
+      default: 0
+    },
     maxUsesPerUser: {
       type: Number,
       default: 1
@@ -51,7 +56,11 @@ const couponSchema = new mongoose.Schema(
     },
     validUntil: {
       type: Date,
-      required: true
+      required: false
+    },
+    expiryDate: {
+      type: Date,
+      required: false
     },
     isActive: {
       type: Boolean,
@@ -98,6 +107,16 @@ const couponSchema = new mongoose.Schema(
   }
 );
 
+// Pre-save: sync expiryDate <-> validUntil so both field names work
+couponSchema.pre('save', function (next) {
+  if (this.expiryDate && !this.validUntil) {
+    this.validUntil = this.expiryDate;
+  } else if (this.validUntil && !this.expiryDate) {
+    this.expiryDate = this.validUntil;
+  }
+  next();
+});
+
 // Indexes
 couponSchema.index({ code: 1, isDeleted: 1 });
 couponSchema.index({ isActive: 1, validUntil: 1 });
@@ -106,11 +125,12 @@ couponSchema.index({ 'usageHistory.userId': 1 });
 // Methods
 couponSchema.methods.isValid = function () {
   const now = new Date();
+  const expiresAt = this.validUntil || this.expiryDate;
+  const notExpired = expiresAt ? expiresAt >= now : true;
   return (
     this.isActive &&
     !this.isDeleted &&
-    this.validFrom <= now &&
-    this.validUntil >= now &&
+    notExpired &&
     (this.maxUses === null || this.usedCount < this.maxUses)
   );
 };

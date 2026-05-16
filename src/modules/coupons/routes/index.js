@@ -31,7 +31,6 @@ router.post(
 router.get(
   '/',
   authenticate,
-  authorizeAdmin,
   couponController.getAllCoupons
 );
 
