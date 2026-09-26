@@ -88,6 +88,25 @@ export const markAllAsRead = async (req, res, next) => {
   }
 };
 
+export const clearAllNotifications = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+
+    await NotificationModel.updateMany(
+      { userId, isDeleted: false },
+      { isDeleted: true, deletedAt: new Date() }
+    );
+
+    return successResponse(
+      res,
+      { message: 'All notifications cleared' },
+      'Success'
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const deleteNotification = async (req, res, next) => {
   try {
     const { id } = req.params;

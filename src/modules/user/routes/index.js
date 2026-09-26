@@ -28,7 +28,20 @@ const requireAdmin = (req, res, next) => {
 
 
 // Get current user's profile
-// GET /api/v1/users/me (Controller: getUsers)
+router.get('/profile', authenticate, (req, _res, next) => {
+  req.params.id = getRequestUserId(req);
+  next();
+}, getUserById);
+router.put('/profile', authenticate, (req, _res, next) => {
+  req.params.id = getRequestUserId(req);
+  next();
+}, updateUser);
+router.get('/me', authenticate, (req, _res, next) => {
+  req.params.id = getRequestUserId(req);
+  next();
+}, getUserById);
+
+// GET /api/v1/users/profile/:id
 router.get('/profile/:id', authenticate, getUserById);
 router.get('/:id', authenticate, requireSelfOrAdmin, getUserById);
 

@@ -66,10 +66,11 @@ router.post('/verify-email', (req, _res, next) => {
 router.get('/verify-email', controllers.verifyEmail);
 
 // Get profile (authenticated)
-router.get('/profile', controllers.getProfile);
+router.get('/profile', authenticate, controllers.getProfile);
+router.get('/me', authenticate, controllers.getProfile);
 
 // Update profile (authenticated)
-router.put('/profile', controllers.updateProfile);
+router.put('/profile', authenticate, controllers.updateProfile);
 
 // Change password (authenticated)
 router.post('/change-password', authenticate, controllers.changePassword);
@@ -93,6 +94,5 @@ router.post('/resend-verification-email', controllers.sendVerificationEmail);
 // router.get('/users', controllers.getProfile);
 
 export default router;
-
 
 

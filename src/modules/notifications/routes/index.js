@@ -10,9 +10,14 @@ router.get('/', authenticate, notificationController.getNotifications);
 
 router.get('/unread-count', authenticate, notificationController.getUnreadCount);
 
-router.put('/:id/read', authenticate, notificationController.markAsRead);
-
+// Bulk actions must be registered before dynamic :id routes.
 router.put('/read-all', authenticate, notificationController.markAllAsRead);
+router.put('/mark-all-read', authenticate, notificationController.markAllAsRead);
+router.post('/mark-all-read', authenticate, notificationController.markAllAsRead);
+router.delete('/clear-all', authenticate, notificationController.clearAllNotifications);
+
+router.put('/:id/read', authenticate, notificationController.markAsRead);
+router.post('/:id/mark-read', authenticate, notificationController.markAsRead);
 
 router.delete('/:id', authenticate, notificationController.deleteNotification);
 
