@@ -1,17 +1,29 @@
-# Production Dockerfile for aqherbal_backend
-FROM node:20-alpine AS base
-WORKDIR /usr/src/app
+# ---- build stage ----
+FROM node:22-alpine AS builder
+WORKDIR /app
 
-# Install dependencies (production only)
-COPY package*.json ./
-RUN npm install --omit=dev
+COPY package.json package-lock.json ./
+RUN npm ci
 
-# Copy source
-COPY . .
+COPY prisma ./prisma
+COPY nest-cli.json tsconfig.json tsconfig.build.json prisma7.config.ts ./
+COPY src ./src
+RUN npx prisma generate
+RUN npm run build
 
-# Environment
+# ---- runtime stage ----
+FROM node:22-alpine AS runner
+WORKDIR /app
 ENV NODE_ENV=production
-EXPOSE 5000
 
-# Default command
-CMD ["node", "src/server.js"]
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev && npm cache clean --force
+
+COPY prisma ./prisma
+COPY prisma7.config.ts ./
+RUN npx prisma generate
+
+COPY --from=builder /app/dist ./dist
+
+EXPOSE 5000
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/src/main.js"]

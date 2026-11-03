@@ -1,76 +1,49 @@
 # Node modules
 node_modules/
 
-#Postman
-postman/
-
-# Environment variables
+# Environment variables (keep secrets out of version control)
 .env
 .env.local
 .env.*.local
 .env.docker
-
-# Logs
-logs/
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Runtime data
-pids/
-*.pid
-*.seed
-*.pid.lock
-
-# OS-specific files
-.DS_Store
-Thumbs.db
-
-# Debugging
-*.swp
-*.swo
-.vscode/
-.idea/
 
 # Build output
 dist/
 build/
 lib/
 coverage/
-.tmp/
-temp/
-
-# TypeScript
 *.tsbuildinfo
 
-# Database
-*.sqlite
-*.sqlite3
-*.db
-*.db-journal
-pgdata/
-dump.sql
+# Prisma generated client
+generated/prisma
 
-# Testing
-coverage/
-jest/
-test-output/
+# Local dev Postgres cluster (see README "Local dev database")
+/.pgdata
+/.pgsock
 
-# Optional npm cache directory
-.npm/
-
-# Optional eslint cache
-.eslintcache
-
-# Misc
-*.tgz
+# Logs / runtime
+logs/
+pids/
+*.pid
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# Test / tooling output
+test-output/
+.eslintcache
+*.tgz
 *.bak
 *.orig
-
-# VSCode workspace settings (optional)
-.vscode/
 
 # Docker
 docker-compose.override.yml
